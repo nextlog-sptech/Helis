@@ -31,7 +31,7 @@ create table usuario(
     email varchar(60),
     telefone char(11),
     cargo varchar(30),
-    senha varchar(45),
+    senha varchar(255),
     empresaId int,
     constraint fkUsuarioEmpresa
         foreign key(empresaId)
