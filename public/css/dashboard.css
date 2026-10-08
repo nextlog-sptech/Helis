@@ -14,3 +14,24 @@ As variaveis estão declaradas no arquivo global.css
 Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
     
  */
+ /* *{
+   border: 1px solid red;
+ } */
+ .card{
+   display: flex;
+   flex-direction: row;
+   justify-content: space-around;
+   border: solid 1px;
+   border-radius: 15px;
+   width: 100%;
+   height: 10px;
+   
+ }
+ .card h3{
+   font-size: 14px;
+   color: var(--cinza);
+ }
+ .card a{
+   font-size: 25px;
+   color:var(--azul);
+ }
