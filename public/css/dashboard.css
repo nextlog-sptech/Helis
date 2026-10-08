@@ -16,22 +16,118 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
  */
  /* *{
    border: 1px solid red;
- } */
+ }  */
  .card{
-   display: flex;
-   flex-direction: row;
-   justify-content: space-around;
-   border: solid 1px;
-   border-radius: 15px;
-   width: 100%;
-   height: 75px;
-   
+   border: solid 2px;
+   border-radius: 35px;
+   background: var(--branco);
+   border-color: var(--branco) ;
+   box-sizing: border-box;
+    background: #fff;
+    box-shadow: 0 0px 2.9px 1px rgba(0, 0, 0, 0.06);
+ }
+ .kpis{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;  
+  width: 100%;
+  height: 110px;
+  align-items: center;
  }
  .card h3{
-   font-size: 14px;
+   font-size: 20px;
    color: var(--cinza);
  }
  .card a{
-   font-size: 25px;
+   font-size: 32px;
    color:var(--azul);
  }
+ .card .img{
+    display: flex;
+    align-items: center;
+    justify-content: center;   
+    width: 28px;
+    height: 28px;              
+    box-sizing: border-box;
+    border: 1.5px solid #7b8194;
+    border-radius: 50%;
+    font-style: normal;        
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    color: #7b8194;
+}
+.kpis {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 110px;
+    /* tirei o justify-content: space-around */
+}
+
+/* cada KPI ocupa uma fatia igual, alinhado à esquerda */
+.kpi {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    height: 60%;
+    padding: 0 22px;
+}
+
+/* linha divisória entre os KPIs */
+.kpi + .kpi {
+    border-left: 1px solid #d9dce3;
+}
+
+.card h3,
+.card a {
+    margin: 0;
+}
+.card h3 {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--cinza);
+}
+.card a {
+    font-size: 33px;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--azul);
+}
+.card .img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    border: 1.5px solid #7b8194;
+    border-radius: 50%;
+    color: #7b8194;
+}
+.card .img i {
+    font-size: 18px;
+}
+.card .img1,
+.card .img2,
+.card .img3,
+.card .img4 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    color: #7b8194;
+}
+.card .img1 i,
+.card .img2 i,
+.card .img3 i,
+.card .img4 i {
+    font-size: 26px;
+}
