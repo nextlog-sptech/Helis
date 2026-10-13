@@ -26,7 +26,8 @@
      font-family: 'Lexend Deca', sans-serif;
      background-color: var(--fundo);
 
-     * {    
+     * {
+        
          font-size: 16rem;
      }
  }
@@ -153,9 +154,10 @@
          flex: 1;
 
          padding-inline: 20px;
-         padding-top: 30px;
+         padding-top:20px;
 
          .topo {
+           
              display: flex;
              justify-content: space-between;
 
@@ -224,7 +226,7 @@
 
      .conteudo {
          width: 100%;
-         margin-top: 40px;
+         margin-top: 30px;
      }
  }
 
