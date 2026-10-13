@@ -70,6 +70,12 @@
                         </div>
                     </div>
                 </div>
+                <div class="chart-container">
+                <div class="chart-title">
+                    Fretes por estado
+                </div>
+                <canvas id="fretesChart"></canvas>
+                </div>
             </div>
         </div>
     </main>
@@ -77,5 +83,46 @@
 <script src="js/componentes/sidebar.js"></script>
 <script src="js/session.js"></script>
 <script src="js/dasboard.js"></script>
+<script>
+    const data = {
+      labels: ['São Paulo', 'Rio de Janeiro', 'Minas Gerais', 'Bahia'],
+      datasets: [
+        {
+          label: 'Fretes',
+          data: [156, 89, 42, 23],
+          backgroundColor: [
+            '#007bff', // azul
+            '#007bff', // azul
+            '#ff7f0e', // laranja
+            '#ff7f0e'  // laranja
+          ],
+          borderRadius: 6
+        }
+      ]
+    };
 
+    const config = {
+      type: 'bar',
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: false,
+            text: 'Chart.js Bar Chart'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 200,
+            ticks: { stepSize: 50 }
+          }
+        }
+      }
+    };
+
+    new Chart(document.getElementById('fretesChart'), config);
+  </script>
 </html>
