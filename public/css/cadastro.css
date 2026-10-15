@@ -80,6 +80,29 @@
    position: relative;
 }
 
+.mensagem-validacao {
+   display: block;
+   width: max-content;
+   max-width: 100%;
+   margin: 0;
+   font-size: 13rem;
+   font-weight: 400;
+   line-height: 1.4;
+   color: #e93a2d;
+}
+
+.mensagem-validacao.erro {
+   color: #e93a2d;
+}
+
+.mensagem-validacao.sucesso {
+   color: #127d4b;
+}
+
+.mensagem-validacao.hidden {
+   display: none;
+}
+
 .card-cabecalho {
    display: flex;
    align-items: center;
@@ -167,9 +190,15 @@
    display: flex;
    justify-content: flex-end;
    align-items: center;
-   gap: 30rem;
+   gap: 18rem;
    margin-top: 60rem;
  }
+
+#mensagem-validacao {
+   margin-right: auto;
+   padding-left: 0;
+   text-align: left;
+}
 
  .botao-volta {
    border: none;

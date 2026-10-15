@@ -106,7 +106,7 @@
 
        <h4>Senha *</h4>
         
-        <input type="password" id="input_senha" placeholder="senha">
+        <input type="password" id="input_senha" placeholder="Senha">
 
       </div>
 
@@ -121,6 +121,7 @@
     </div>
 
     <div class="botoes">
+      <div id="mensagem-validacao-empresa" class="mensagem-validacao hidden" role="alert" aria-live="assertive"></div>
       <button type="button" class="botao-avancar" onclick="avancar()">Avançar</button>
     </div>
     </div>
@@ -143,7 +144,7 @@
 
       <div class="campo">
         <h4>CEP</h4>
-        <input type="text" id="input_cep" placeholder="00000-00">
+        <input type="text" id="input_cep" placeholder="00000-000">
       </div>
 
       <div class="campo">
@@ -158,7 +159,7 @@
 
       <div class="campo">
         <h4>Complemento (opcional)</h4>
-        <input type="text" id="input_complemento" placeholder="000">
+        <input type="text" id="input_complemento" placeholder="Sede">
       </div>
 
       <div class="campo">
@@ -173,6 +174,7 @@
       </div>
 
     <div class="botoes">
+      <div id="mensagem-validacao-endereco" class="mensagem-validacao hidden" role="alert" aria-live="assertive"></div>
       <button type="button" class="botao-volta" onclick="voltar()">Voltar</button>
     
       <button type="button" class="botao-avancar" onclick="avancar2()">Avançar</button>
@@ -198,7 +200,7 @@
 
       <div class="campo">
         <h4>CPF</h4>
-        <input type="text" id="input_cpf" placeholder="00000-00">
+        <input type="text" id="input_cpf" placeholder="123.456.789-00">
       </div>
 
       <div class="campo">
@@ -223,12 +225,13 @@
 
        <div class="campo">
         <h4>Senha</h4>
-        <input type="text" id="input_senharesponsavel" placeholder="senha">
+        <input type="text" id="input_senharesponsavel" placeholder="Senha">
       </div>
       </div>
       
 
       <div class="botoes">
+      <div id="mensagem-validacao-responsavel" class="mensagem-validacao hidden" role="alert" aria-live="assertive"></div>
       <button type="button" class="botao-volta" onclick="voltar2()">Voltar</button>
 
       <button type="button" class="botao-avancar" onclick="finalizar()">Finalizar</button>

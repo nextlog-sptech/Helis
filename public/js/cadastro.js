@@ -1,3 +1,42 @@
+function obterMensagemAtual() {
+    var infos = document.getElementById("conteudo-informacoes");
+    var endereco = document.getElementById("conteudo-endereco");
+    var responsavel = document.getElementById("conteudo-responsavel");
+
+    if (infos && infos.style.display !== "none") {
+        return document.getElementById("mensagem-validacao-empresa");
+    }
+
+    if (endereco && endereco.style.display !== "none") {
+        return document.getElementById("mensagem-validacao-endereco");
+    }
+
+    if (responsavel && responsavel.style.display !== "none") {
+        return document.getElementById("mensagem-validacao-responsavel");
+    }
+
+    return document.getElementById("mensagem-validacao-empresa");
+}
+
+function mostrarMensagem(texto, tipo) {
+    var elemento = obterMensagemAtual();
+    if (!elemento) {
+        return;
+    }
+
+    if (!texto) {
+        elemento.textContent = "";
+        elemento.classList.add("hidden");
+        elemento.classList.remove("erro", "sucesso");
+        return;
+    }
+
+    elemento.textContent = texto;
+    elemento.classList.remove("hidden");
+    elemento.classList.remove("erro", "sucesso");
+    elemento.classList.add(tipo === "sucesso" ? "sucesso" : "erro");
+}
+
 function barras(etapa) {
     var barra1 = document.getElementById("barra1");
     var barra2 = document.getElementById("barra2");
@@ -39,35 +78,32 @@ function avancar() {
     var senha = document.getElementById("input_senha").value.trim();
     var telefone = document.getElementById("input_telefone").value.trim();
 
-    // 1. Campos vazios
+    mostrarMensagem("");
+
     if (cnpj == "" || razao == "" || nomeFantasia == "" || email == "" || senha == "" || telefone == "") {
-        alert("Preencha todos os campos da empresa antes de avançar!");
+        mostrarMensagem("Preencha todos os campos da empresa antes de avançar!");
         return false;
     }
 
-    // 2. Validação do CNPJ (deve ter 14 dígitos numéricos)
     var cnpjLimpo = cnpj.replace(/\D/g, '');
     if (cnpjLimpo.length != 14) {
-        alert("O CNPJ deve conter exatamente 14 dígitos numéricos!");
+        mostrarMensagem("O CNPJ deve conter exatamente 14 dígitos numéricos!");
         return false;
     }
 
-    // 3. Validação do E-mail da empresa
     if (!email.includes("@") || !email.includes(".")) {
-        alert("Insira um e-mail válido para a empresa (ex: empresa@dominio.com)!");
+        mostrarMensagem("Insira um e-mail válido para a empresa (ex: empresa@dominio.com)!");
         return false;
     }
 
-    // 4. Validação da Senha da empresa (mínimo de 6 caracteres)
     if (senha.length < 6) {
-        alert("A senha da empresa deve conter no mínimo 6 caracteres!");
+        mostrarMensagem("A senha da empresa deve conter no mínimo 6 caracteres!");
         return false;
     }
 
-    // 5. Validação do Telefone da empresa (10 ou 11 dígitos com DDD)
     var telLimpo = telefone.replace(/\D/g, '');
     if (telLimpo.length < 10 || telLimpo.length > 11) {
-        alert("O telefone da empresa deve ter 10 ou 11 dígitos numéricos com DDD!");
+        mostrarMensagem("O telefone da empresa deve ter 10 ou 11 dígitos numéricos com DDD!");
         return false;
     }
 
@@ -85,16 +121,16 @@ function avancar2() {
     var bairro = document.getElementById("input_bairro").value.trim();
     var cidade = document.getElementById("input_cidade").value.trim();
 
-    // 1. Campos vazios
+    mostrarMensagem("");
+
     if (cep == "" || logradouro == "" || numero == "" || bairro == "" || cidade == "") {
-        alert("Preencha todos os campos de endereço antes de avançar!");
+        mostrarMensagem("Preencha todos os campos de endereço antes de avançar!");
         return false;
     }
 
-    // 2. Validação do CEP (deve ter 8 dígitos numéricos)
     var cepLimpo = cep.replace(/\D/g, '');
     if (cepLimpo.length != 8) {
-        alert("O CEP deve conter exatamente 8 dígitos numéricos!");
+        mostrarMensagem("O CEP deve conter exatamente 8 dígitos numéricos!");
         return false;
     }
 
@@ -106,6 +142,7 @@ function avancar2() {
 }
 
 function voltar() {
+    mostrarMensagem("");
     document.getElementById("conteudo-endereco").style.display = "none";
     document.getElementById("conteudo-informacoes").style.display = "block";
 
@@ -113,6 +150,7 @@ function voltar() {
 }
 
 function voltar2() {
+    mostrarMensagem("");
     document.getElementById("conteudo-responsavel").style.display = "none";
     document.getElementById("conteudo-endereco").style.display = "block";
 
@@ -127,39 +165,38 @@ function finalizar() {
     var cargo = document.getElementById("input_cargo").value.trim();
     var senha = document.getElementById("input_senharesponsavel").value.trim();
 
-    // 1. Campos vazios
+    mostrarMensagem("");
+
     if (cpf == "" || nome == "" || email == "" || telefone == "" || cargo == "" || senha == "") {
-        alert("Preencha todos os campos do responsável antes de finalizar!");
+        mostrarMensagem("Preencha todos os campos do responsável antes de finalizar!");
         return false;
     }
 
-    // 2. Validação do CPF (deve ter 11 dígitos numéricos)
     var cpfLimpo = cpf.replace(/\D/g, '');
     if (cpfLimpo.length != 11) {
-        alert("O CPF do responsável deve conter exatamente 11 dígitos numéricos!");
+        mostrarMensagem("O CPF do responsável deve conter exatamente 11 dígitos numéricos!");
         return false;
     }
 
-    // 3. Validação do E-mail do responsável
     if (!email.includes("@") || !email.includes(".")) {
-        alert("Insira um e-mail válido para o responsável (ex: nome@dominio.com)!");
+        mostrarMensagem("Insira um e-mail válido para o responsável (ex: nome@dominio.com)!");
         return false;
     }
 
-    // 4. Validação do Telefone do responsável (10 ou 11 dígitos com DDD)
     var telRespLimpo = telefone.replace(/\D/g, '');
     if (telRespLimpo.length < 10 || telRespLimpo.length > 11) {
-        alert("O telefone do responsável deve ter 10 ou 11 dígitos numéricos com DDD!");
+        mostrarMensagem("O telefone do responsável deve ter 10 ou 11 dígitos numéricos com DDD!");
         return false;
     }
 
-    // 5. Validação da Senha do responsável (mínimo de 6 caracteres)
     if (senha.length < 6) {
-        alert("A senha do responsável deve conter no mínimo 6 caracteres!");
+        mostrarMensagem("A senha do responsável deve conter no mínimo 6 caracteres!");
         return false;
     }
 
-    alert("Cadastro realizado com sucesso!");
-    window.location.href = "login.html";
+    mostrarMensagem("Cadastro realizado com sucesso!", "sucesso");
+    setTimeout(function () {
+        window.location.href = "login.html";
+    }, 1200);
     return false;
 }
