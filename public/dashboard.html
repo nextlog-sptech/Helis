@@ -70,19 +70,42 @@
                         </div>
                     </div>
                 </div>
-                <div class="chart-container">
-                <div class="chart-title">
-                    Fretes por estado
+                                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="img2">
+                            <i class="fa-solid fa-truck-fast"></i>
+                        </div>
+                        <div class="chart-title">
+                            Fretes por estado
+                        </div>
+                    </div>
+                    <canvas id="fretesChart"></canvas>
                 </div>
-                <canvas id="fretesChart"></canvas>
+
+                <!-- segundo gráfico agora DENTRO do .conteudo -->
+                <div class="chart-container chart-linha">
+                    <div class="chart-header">
+                        <div class="img2">
+                            <i class="fa-solid fa-truck-fast"></i>
+                        </div>
+                        <div class="chart-title">
+                            Fretes por período
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="periodoChart"></canvas>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </div> <!-- fecha .conteudo -->
+        </div> <!-- fecha .main-posLogin -->
+    </main>
+    </div>
     </main>
 </body>
 <script src="js/componentes/sidebar.js"></script>
 <script src="js/session.js"></script>
 <script src="js/dasboard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const data = {
       labels: ['São Paulo', 'Rio de Janeiro', 'Minas Gerais', 'Bahia'],
@@ -91,10 +114,10 @@
           label: 'Fretes',
           data: [156, 89, 42, 23],
           backgroundColor: [
-            '#007bff', // azul
-            '#007bff', // azul
-            '#ff7f0e', // laranja
-            '#ff7f0e'  // laranja
+            '#006FCA', // azul
+            '#006FCA', // azul
+            '#FF7800', // laranja
+            '#FF7800'  // laranja
           ],
           borderRadius: 6
         }
@@ -102,27 +125,77 @@
     };
 
     const config = {
-      type: 'bar',
-      data: data,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-          title: {
-            display: false,
-            text: 'Chart.js Bar Chart'
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 200,
-            ticks: { stepSize: 50 }
-          }
-        }
+  type: 'bar',
+  data: data,
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      title: {
+        display: false,
+        text: 'Chart.js Bar Chart'
       }
-    };
+    },
+    datasets: {
+      bar: {
+        barPercentage: 0.5,      // largura da barra dentro da categoria
+        categoryPercentage: 0.6  // espaço que a categoria ocupa
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 200,
+        ticks: { stepSize: 50 }
+      }
+    }
+  }
+};
 
     new Chart(document.getElementById('fretesChart'), config);
+    const dataPeriodo = {
+  labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+  datasets: [{
+    label: 'Fretes',
+    data: [120, 185, 150, 210, 175, 240, 195],
+    borderColor: '#FF7800',
+    backgroundColor: 'rgba(255, 120, 0, 0.12)', // área clara abaixo da linha
+    fill: true,
+    tension: 0,                 // linhas retas, como na imagem
+    borderWidth: 3,
+    pointRadius: 4,
+    pointBorderWidth: 2,
+    pointBackgroundColor: '#fff', // bolinha vazada
+    pointBorderColor: '#FF7800'
+  }]
+};
+
+const configPeriodo = {
+  type: 'line',
+  data: dataPeriodo,
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      y: {
+        min: 80,
+        max: 250,
+        // mostra só 100, 150, 200 e 250, mas o eixo começa em 80
+        afterBuildTicks: (scale) => {
+          scale.ticks = [100, 150, 200, 250].map(value => ({ value }));
+        },
+        border: { display: false }
+      },
+      x: {
+        grid: { display: false }
+      }
+    }
+  }
+};
+
+new Chart(document.getElementById('periodoChart'), configPeriodo);
   </script>
 </html>
