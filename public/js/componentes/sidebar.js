@@ -1,6 +1,6 @@
 setarTema(false)
 sidebar.innerHTML = `
- <a class="logo" href="dashboard.html"><img src="assets/icon/logo.svg" alt=""></a>
+ <a class="logo" href="dashboard.html"><img src="assets/icon/logo.png" alt=""></a>
             <div class="links">
                 <a href="dashboard.html" id="linkDash" class="link">
                     <i class="fa-solid fa-house"></i> Dasboard
