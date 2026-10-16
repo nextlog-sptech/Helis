@@ -80,6 +80,52 @@
    position: relative;
 }
 
+.mensagem-validacao {
+   display: block;
+   width: max-content;
+   max-width: 100%;
+   margin: 0;
+   font-size: 13rem;
+   font-weight: 400;
+   line-height: 1.4;
+   color: #e93a2d;
+}
+
+.mensagem-validacao.erro {
+   color: #e93a2d;
+}
+
+.mensagem-validacao.sucesso {
+   color: #127d4b;
+}
+
+.mensagem-validacao.hidden {
+   display: none;
+}
+
+.mensagem-validacao-campo {
+   display: block;
+   width: 100%;
+   margin-top: 5rem;
+   font-size: 12rem;
+   font-weight: 400;
+   line-height: 1.4;
+   overflow-wrap: anywhere;
+   color: #e93a2d;
+}
+
+.mensagem-validacao-campo.erro {
+   color: #e93a2d;
+}
+
+.mensagem-validacao-campo.hidden {
+   display: none;
+}
+
+.campo input[aria-invalid="true"] {
+   border-color: #e93a2d;
+}
+
 .card-cabecalho {
    display: flex;
    align-items: center;
@@ -167,9 +213,15 @@
    display: flex;
    justify-content: flex-end;
    align-items: center;
-   gap: 30rem;
+   gap: 18rem;
    margin-top: 60rem;
  }
+
+#mensagem-validacao {
+   margin-right: auto;
+   padding-left: 0;
+   text-align: left;
+}
 
  .botao-volta {
    border: none;
@@ -260,4 +312,3 @@
    margin-top: 29rem;
    }
    }
-
