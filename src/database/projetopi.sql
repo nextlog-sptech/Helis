@@ -131,8 +131,11 @@ create table log(
     tipo varchar(45),
     horario datetime,
     mensagem varchar(45),
-    servico varchar(45)
+    servico varchar(45),
+    qtdRegistros INT,
+    tempoMs DATETIME(3)
 );
+
 
 INSERT INTO endereco (cep, numero, logradouro, complemento, bairro, cidade)
 VALUES
