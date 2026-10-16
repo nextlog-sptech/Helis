@@ -37,6 +37,62 @@ function mostrarMensagem(texto, tipo) {
     elemento.classList.add(tipo === "sucesso" ? "sucesso" : "erro");
 }
 
+function limparErroCampo(campoId) {
+    var elemento = document.getElementById("mensagem-" + campoId);
+    var campo = document.getElementById(campoId);
+
+    if (elemento) {
+        elemento.textContent = "";
+        elemento.classList.add("hidden");
+        elemento.classList.remove("erro");
+    }
+
+    if (campo) {
+        campo.removeAttribute("aria-invalid");
+    }
+}
+
+function limparErros(campos) {
+    for (var i = 0; i < campos.length; i++) {
+        limparErroCampo(campos[i]);
+    }
+}
+
+function mostrarErroCampo(campoId, texto) {
+    var elemento = document.getElementById("mensagem-" + campoId);
+    var campo = document.getElementById(campoId);
+
+    if (!elemento || !campo) {
+        return;
+    }
+
+    elemento.textContent = texto;
+    elemento.classList.remove("hidden");
+    elemento.classList.add("erro");
+    campo.setAttribute("aria-invalid", "true");
+}
+
+function validarCamposObrigatorios(campos) {
+    var primeiroCampoInvalido = null;
+
+    for (var i = 0; i < campos.length; i++) {
+        var campo = document.getElementById(campos[i][0]);
+        if (campo.value.trim() === "") {
+            mostrarErroCampo(campos[i][0], campos[i][1]);
+            if (!primeiroCampoInvalido) {
+                primeiroCampoInvalido = campo;
+            }
+        }
+    }
+
+    if (primeiroCampoInvalido) {
+        primeiroCampoInvalido.focus();
+        return false;
+    }
+
+    return true;
+}
+
 function senhaValida(senha) {
     return senha.length >= 6 &&
         /\p{Lu}/u.test(senha) &&
@@ -86,30 +142,37 @@ function avancar() {
     var senha = document.getElementById("input_senha").value;
     var telefone = document.getElementById("input_telefone").value;
 
+    limparErros(["input_cnpj", "input_razao", "input_nomefantasia", "input_email", "input_senha", "input_telefone"]);
     mostrarMensagem("");
 
-    if (cnpj == "" || razao == "" || nomeFantasia == "" || email == "" || senha == "" || telefone == "") {
-        mostrarMensagem("Preencha todos os campos da empresa antes de avançar.");
+    if (!validarCamposObrigatorios([
+        ["input_cnpj", "Informe o CNPJ da empresa."],
+        ["input_razao", "Informe a razão social da empresa."],
+        ["input_nomefantasia", "Informe o nome fantasia da empresa."],
+        ["input_email", "Informe o e-mail da empresa."],
+        ["input_senha", "Informe a senha da empresa."],
+        ["input_telefone", "Informe o telefone da empresa."]
+    ])) {
         return false;
     }
 
     if (!/^[0-9]{14}$/.test(cnpj)) {
-        mostrarMensagem("O CNPJ deve conter exatamente 14 dígitos e apenas números.");
+        mostrarErroCampo("input_cnpj", "O CNPJ deve conter exatamente 14 dígitos e apenas números.");
         return false;
     }
 
     if (!email.includes("@") || !email.includes(".")) {
-        mostrarMensagem("Insira um e-mail válido para a empresa (ex: empresa@dominio.com).");
+        mostrarErroCampo("input_email", "Insira um e-mail válido para a empresa (ex: empresa@dominio.com).");
         return false;
     }
 
     if (!senhaValida(senha)) {
-        mostrarMensagem("A senha da empresa deve ter ao menos 6 caracteres, incluindo letras maiúsculas e minúsculas, um número e um caractere especial.");
+        mostrarErroCampo("input_senha", "A senha da empresa deve ter ao menos 6 caracteres, incluindo letras maiúsculas e minúsculas, um número e um caractere especial.");
         return false;
     }
 
     if (!/^[0-9]{10,11}$/.test(telefone)) {
-        mostrarMensagem("O telefone da empresa deve conter apenas números: 10 ou 11 dígitos com DDD.");
+        mostrarErroCampo("input_telefone", "O telefone da empresa deve conter apenas números: 10 ou 11 dígitos com DDD.");
         return false;
     }
 
@@ -127,16 +190,22 @@ function avancar2() {
     var bairro = document.getElementById("input_bairro").value.trim();
     var cidade = document.getElementById("input_cidade").value.trim();
 
+    limparErros(["input_cep", "input_logradouro", "input_numero", "input_bairro", "input_cidade"]);
     mostrarMensagem("");
 
-    if (cep == "" || logradouro == "" || numero == "" || bairro == "" || cidade == "") {
-        mostrarMensagem("Preencha todos os campos de endereço antes de avançar.");
+    if (!validarCamposObrigatorios([
+        ["input_cep", "Informe o CEP da empresa."],
+        ["input_logradouro", "Informe o logradouro da empresa."],
+        ["input_numero", "Informe o número do endereço."],
+        ["input_bairro", "Informe o bairro da empresa."],
+        ["input_cidade", "Informe a cidade da empresa."]
+    ])) {
         return false;
     }
 
     var cepLimpo = cep.replace(/\D/g, '');
     if (cepLimpo.length != 8) {
-        mostrarMensagem("O CEP deve conter exatamente 8 dígitos numéricos.");
+        mostrarErroCampo("input_cep", "O CEP deve conter exatamente 8 dígitos numéricos.");
         return false;
     }
 
@@ -148,6 +217,7 @@ function avancar2() {
 }
 
 function voltar() {
+    limparErros(["input_cep", "input_logradouro", "input_numero", "input_bairro", "input_cidade"]);
     mostrarMensagem("");
     document.getElementById("conteudo-endereco").style.display = "none";
     document.getElementById("conteudo-informacoes").style.display = "block";
@@ -156,6 +226,7 @@ function voltar() {
 }
 
 function voltar2() {
+    limparErros(["input_cpf", "input_nomeresponsavel", "input_emailresponsavel", "input_telefoneresponsavel", "input_cargo", "input_senharesponsavel"]);
     mostrarMensagem("");
     document.getElementById("conteudo-responsavel").style.display = "none";
     document.getElementById("conteudo-endereco").style.display = "block";
@@ -171,31 +242,38 @@ function finalizar() {
     var cargo = document.getElementById("input_cargo").value.trim();
     var senha = document.getElementById("input_senharesponsavel").value;
 
+    limparErros(["input_cpf", "input_nomeresponsavel", "input_emailresponsavel", "input_telefoneresponsavel", "input_cargo", "input_senharesponsavel"]);
     mostrarMensagem("");
 
-    if (cpf == "" || nome == "" || email == "" || telefone == "" || cargo == "" || senha == "") {
-        mostrarMensagem("Preencha todos os campos do responsável antes de finalizar.");
+    if (!validarCamposObrigatorios([
+        ["input_cpf", "Informe o CPF do responsável."],
+        ["input_nomeresponsavel", "Informe o nome do responsável."],
+        ["input_emailresponsavel", "Informe o e-mail do responsável."],
+        ["input_telefoneresponsavel", "Informe o telefone do responsável."],
+        ["input_cargo", "Informe o cargo do responsável."],
+        ["input_senharesponsavel", "Informe a senha do responsável."]
+    ])) {
         return false;
     }
 
     var cpfLimpo = cpf.replace(/\D/g, '');
     if (cpfLimpo.length != 11) {
-        mostrarMensagem("O CPF do responsável deve conter exatamente 11 dígitos numéricos.");
+        mostrarErroCampo("input_cpf", "O CPF do responsável deve conter exatamente 11 dígitos numéricos.");
         return false;
     }
 
     if (!email.includes("@") || !email.includes(".")) {
-        mostrarMensagem("Insira um e-mail válido para o responsável (ex: nome@dominio.com).");
+        mostrarErroCampo("input_emailresponsavel", "Insira um e-mail válido para o responsável (ex: nome@dominio.com).");
         return false;
     }
 
     if (!/^[0-9]{10,11}$/.test(telefone)) {
-        mostrarMensagem("O telefone do responsável deve conter apenas números: 10 ou 11 dígitos com DDD.");
+        mostrarErroCampo("input_telefoneresponsavel", "O telefone do responsável deve conter apenas números: 10 ou 11 dígitos com DDD.");
         return false;
     }
 
     if (!senhaValida(senha)) {
-        mostrarMensagem("A senha do responsável deve ter ao menos 6 caracteres, incluindo letras maiúsculas e minúsculas, um número e um caractere especial.");
+        mostrarErroCampo("input_senharesponsavel", "A senha do responsável deve ter ao menos 6 caracteres, incluindo letras maiúsculas e minúsculas, um número e um caractere especial.");
         return false;
     }
 
@@ -204,4 +282,11 @@ function finalizar() {
         window.location.href = "login.html";
     }, 1200);
     return false;
+}
+
+var camposCadastro = document.querySelectorAll(".campo input");
+for (var i = 0; i < camposCadastro.length; i++) {
+    camposCadastro[i].addEventListener("input", function () {
+        limparErroCampo(this.id);
+    });
 }
