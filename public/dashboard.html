@@ -18,7 +18,7 @@
         <div class="main-posLogin">
             <div class="topo">
                 <div class="titulo">
-                    Bem vindo, Fernanda
+                Bem-vindo(a, Fernanda)
                 </div>
                 <div class="user" id="userNav"></div>
             </div>
@@ -70,40 +70,115 @@
                         </div>
                     </div>
                 </div>
-                                <div class="chart-container">
-                    <div class="chart-header">
-                        <div class="img2">
-                            <i class="fa-solid fa-truck-fast"></i>
+                <div class="graficoEhTabela">
+                    <div class="tabela card">
+                        <div class="tabela-titulo">
+                            <i class="fa-solid fa-cube"></i>
+                            <span>Fretes mais recentes</span>
                         </div>
-                        <div class="chart-title">
-                            Fretes por estado
-                        </div>
-                    </div>
-                    <canvas id="fretesChart"></canvas>
-                </div>
 
-                <!-- segundo gráfico agora DENTRO do .conteudo -->
-                <div class="chart-container chart-linha">
-                    <div class="chart-header">
-                        <div class="img2">
-                            <i class="fa-solid fa-truck-fast"></i>
+                        <div class="tabela-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Cidade</th>
+                                        <th>Veículo</th>
+                                        <th>Baú</th>
+                                        <th>Viagem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Lojas Americanas</td>
+                                        <td>Scania R 450</td>
+                                        <td>Carlos Eduardo</td>
+                                        <td>24 Out, 18:00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mercado Livre</td>
+                                        <td>Mercedes-Benz Actros</td>
+                                        <td>Bruno Silva</td>
+                                        <td>24 Out, 11:30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ambev S.A.</td>
+                                        <td>Volvo FH 540</td>
+                                        <td>Ricardo Santos</td>
+                                        <td>23 Out, 15:00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Via Varejo</td>
+                                        <td>VW Constellation</td>
+                                        <td>Marcos Souza</td>
+                                        <td>25 Out, 08:00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Magazine Luiza</td>
+                                        <td>Scania G 420</td>
+                                        <td>Felipe Oliveira</td>
+                                        <td>24 Out, 21:00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Carrefour Brasil</td>
+                                        <td>Volvo VM 330</td>
+                                        <td>Gustavo Henrique</td>
+                                        <td>24 Out, 14:15</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="chart-title">
-                            Fretes por período
-                        </div>
-                    </div>
-                    <div class="chart-body">
-                        <canvas id="periodoChart"></canvas>
+
+                        <a href="fretes.html" class="ver-mais">Ver mais</a>
                     </div>
                 </div>
-            </div> <!-- fecha .conteudo -->
-        </div> <!-- fecha .main-posLogin -->
-    </main>
-    </div>
+                <div class="graficosAbaixo">
+                    <div class="rosca card">
+                        <div class="rosca-titulo">
+                            <i class="fa-solid fa-truck"></i>
+                            <span>Tipos de Baú</span>
+                        </div>
+
+                        <div class="rosca-corpo">
+                            <div class="rosca-legenda">
+                                <div class="legenda-item">
+                                    <span class="bolinha laranja"></span>
+                                    <p>Alumínio(40%)</p>
+                                </div>
+                                <div class="legenda-item">
+                                    <span class="bolinha azul"></span>
+                                    <p>Sider (60%)</p>
+                                </div>
+                            </div>
+
+                            <div class="rosca-grafico">
+                                <canvas id="graficoRosca"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rosca rosca-regiao card">
+                        <div class="rosca-titulo">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            <span>Fretes por Região</span>
+                        </div>
+
+                        <div class="rosca-corpo">
+                            <div class="rosca-legenda" id="legendaRegiao"></div>
+
+                            <div class="rosca-grafico">
+                                <canvas id="graficoRegiao"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card"></div>
+
+                </div>
+            </div>
+        </div>
     </main>
 </body>
 <script src="js/componentes/sidebar.js"></script>
 <script src="js/session.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/dasboard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>

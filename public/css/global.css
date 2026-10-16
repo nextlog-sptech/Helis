@@ -7,15 +7,19 @@
  /* Por favor usem as variaveis para facilitar a configuração do modo escuro  */
  /* Usem tbm o 'rem' inves do px, nas letras para facilitar a resposividade */
  * {
-     --azul: #006FCA;
+  
+     font-size: 1px;
+     margin: 0px;
+
+ }
+ :root{
+       --azul: #006FCA;
      --azulEscuro: #004D8D;
      --laranja: #FF7800;
      --fundo: #ededf3;
      --branco: #FFFFFF;
      --cinza: #9C9C9C;
-     font-size: 1px;
-     margin: 0px;
-
+     --cinza2: #CAD1DF;
  }
 
  body {
@@ -23,6 +27,7 @@
      background-color: var(--fundo);
 
      * {
+        
          font-size: 16rem;
      }
  }
@@ -149,9 +154,10 @@
          flex: 1;
 
          padding-inline: 20px;
-         padding-top: 30px;
+         padding-top:20px;
 
          .topo {
+           
              display: flex;
              justify-content: space-between;
 
@@ -165,7 +171,6 @@
                  display: flex;
                  align-items: center;
                  gap: 40px;
-
                  .userButton {
                      border-radius: 50%;
                      overflow: hidden;
@@ -180,8 +185,22 @@
                          width: 100%;
                          height: 100%;
                      }
+                     
                  }
-
+                 .temaButton{
+                        background-color: var(--cinza2) ;
+                        border:none;
+                            outline: none;
+                            cursor: pointer;
+                        i{
+                            color: var(--azul);
+                            font-size: 30px ;
+                        }
+                        i:hover{
+                            color: var(--laranja);
+                        }
+                     }
+                    
                  .buttonSair {
                      background-color: var(--laranja);
                      height: 40px;
@@ -207,7 +226,7 @@
 
      .conteudo {
          width: 100%;
-         margin-top: 40px;
+         margin-top: 30px;
      }
  }
 
