@@ -4,14 +4,72 @@ const inputUsuario = document.getElementById('ipt_user');
 const botaoEntrar = document.getElementById('botao_entrar');
 const formularioLogin = document.getElementById('form_login');
 
-function mostrarMensagem(mensagem, tipo) {
-  const elementoMensagem = document.getElementById('mensagem_login');
+function limparErroCampo(campo) {
+  const elementoMensagem = document.getElementById(`mensagem-${campo.id}`);
+  if (elementoMensagem) {
+    elementoMensagem.textContent = '';
+    elementoMensagem.classList.add('hidden');
+  }
+
+  campo.removeAttribute('aria-invalid');
+}
+
+function mostrarErroCampo(campo, mensagem) {
+  const elementoMensagem = document.getElementById(`mensagem-${campo.id}`);
   if (!elementoMensagem) {
     return;
   }
 
-  elementoMensagem.className = 'mensagem-login' + (tipo ? ` ${tipo}` : '');
   elementoMensagem.textContent = mensagem;
+  elementoMensagem.classList.remove('hidden');
+  campo.setAttribute('aria-invalid', 'true');
+}
+
+function limparErrosLogin() {
+  if (inputUsuario) {
+    limparErroCampo(inputUsuario);
+  }
+
+  if (inputSenha) {
+    limparErroCampo(inputSenha);
+  }
+}
+
+function mostrarErroCredenciais(mensagem) {
+  if (inputSenha) {
+    mostrarErroCampo(inputSenha, mensagem);
+  }
+}
+
+function cnpjValido(cnpj) {
+  if (!/^\d{14}$/.test(cnpj) || /^(\d)\1{13}$/.test(cnpj)) {
+    return false;
+  }
+
+  const calcularDigito = (base, pesos) => {
+    const soma = base.split('').reduce((total, digito, indice) => {
+      return total + Number(digito) * pesos[indice];
+    }, 0);
+    const resto = soma % 11;
+    return resto < 2 ? 0 : 11 - resto;
+  };
+
+  const primeiroDigito = calcularDigito(cnpj.slice(0, 12), [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+  const segundoDigito = calcularDigito(cnpj.slice(0, 12) + primeiroDigito, [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+
+  return cnpj.endsWith(`${primeiroDigito}${segundoDigito}`);
+}
+
+function identificadorValido(identificador) {
+  if (identificador.includes('@')) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identificador);
+  }
+
+  if (!/^[\d./\-\s]+$/.test(identificador)) {
+    return false;
+  }
+
+  return cnpjValido(identificador.replace(/\D/g, ''));
 }
 
 if (toggleSenha && inputSenha) {
@@ -33,16 +91,24 @@ async function realizarLogin() {
 
   const identificador = inputUsuario.value.trim();
   const senha = inputSenha.value;
+  const identificadorInvalido = Boolean(identificador) && !identificadorValido(identificador);
 
-  if (!identificador || !senha) {
-    const mensagem = 'Informe seu e-mail ou CNPJ e a senha.';
-    mostrarMensagem(mensagem);
-    alert(mensagem);
+  if (!identificador || !senha || identificadorInvalido) {
+    limparErrosLogin();
+    if (!identificador) {
+      mostrarErroCampo(inputUsuario, 'Informe seu e-mail ou CNPJ.');
+    } else if (identificadorInvalido) {
+      mostrarErroCampo(inputUsuario, 'Informe um e-mail válido ou um CNPJ válido.');
+    }
+    if (!senha) {
+      mostrarErroCampo(inputSenha, 'Informe sua senha.');
+    }
+    (identificador && !identificadorInvalido ? inputSenha : inputUsuario).focus();
     return;
   }
 
   botaoEntrar.disabled = true;
-  mostrarMensagem('');
+  limparErrosLogin();
 
   try {
     const resposta = await fetch('/api/login', {
@@ -51,11 +117,9 @@ async function realizarLogin() {
       body: JSON.stringify({ identificador, senha })
     });
     const resultado = await resposta.json();
-
     if (!resposta.ok) {
       const mensagemErro = resultado.mensagem || 'Não foi possível realizar o login.';
-      mostrarMensagem(mensagemErro);
-      alert(mensagemErro);
+      mostrarErroCredenciais(mensagemErro);
       return;
     }
 
@@ -63,17 +127,31 @@ async function realizarLogin() {
       salvarSessao(resultado.usuario);
     }
 
-    mostrarMensagem('Login realizado com sucesso!', 'sucesso');
-    alert(resultado.mensagem || 'Login realizado com sucesso.');
     window.location.replace('dashboard.html');
   } catch (erro) {
     console.error('Erro na requisição de login:', erro);
-    const mensagemErro = 'Não foi possível conectar ao servidor.';
-    mostrarMensagem(mensagemErro);
-    alert(mensagemErro);
+    mostrarErroCredenciais('Não foi possível conectar ao servidor.');
   } finally {
     botaoEntrar.disabled = false;
   }
+}
+
+if (inputUsuario) {
+  inputUsuario.addEventListener('input', () => {
+    limparErroCampo(inputUsuario);
+    if (inputSenha) {
+      limparErroCampo(inputSenha);
+    }
+  });
+}
+
+if (inputSenha) {
+  inputSenha.addEventListener('input', () => {
+    limparErroCampo(inputSenha);
+    if (inputUsuario) {
+      limparErroCampo(inputUsuario);
+    }
+  });
 }
 
 if (botaoEntrar) {

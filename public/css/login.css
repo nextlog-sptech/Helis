@@ -119,13 +119,7 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
                   align-items: center;
 
                   .input {
-                     display: flex;
                      width: 100%;
-                     border-radius: 4rem;
-                     height: 45rem;
-                     border-radius: 8rem;
-                     box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.35);
-                     padding: 10rem 15rem;
                      padding-right: 40rem;
                   }
 
@@ -164,20 +158,43 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
 
                .input {
                   display: flex;
-                  border-radius: 4rem;
-                  height: 45rem;
-                  border-radius: 8rem;
-                  box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.35);
-                  padding: 10rem 15rem;
+                  box-sizing: border-box;
+                  height: 50rem;
+                  padding: 0 11rem;
+                  background-color: var(--branco);
+                  border: 1rem solid var(--cinza);
+                  border-radius: 6rem;
+                  color: var(--preto);
+                  font-size: 15rem;
                }
 
                .input:focus {
                   outline: none;
+                  border-color: var(--azul);
                }
 
                .input::placeholder {
                   color: var(--cinza);
                }
+            }
+
+            .mensagem-validacao-campo {
+               display: block;
+               width: 100%;
+               margin-top: 5rem;
+               font-size: 12rem;
+               font-weight: 400;
+               line-height: 1.4;
+               overflow-wrap: anywhere;
+               color: #e93a2d;
+            }
+
+            .mensagem-validacao-campo.hidden {
+               display: none;
+            }
+
+            .campo .input[aria-invalid="true"] {
+               border-color: #e93a2d;
             }
 
             .campo-entrar {
