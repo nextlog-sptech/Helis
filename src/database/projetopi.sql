@@ -130,10 +130,10 @@ create table log(
     idLog int primary key auto_increment,
     tipo varchar(45),
     horario datetime,
-    mensagem varchar(45),
+    mensagem varchar(300),
     servico varchar(45),
-    qtdRegistros INT,
-    tempoMs DATETIME(3)
+    qtdRegistrosLidos INT,
+    tempoLeituraMs BIGINT
 );
 
 
