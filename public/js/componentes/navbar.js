@@ -38,3 +38,11 @@ window.addEventListener('scroll', () => {
 
     }
 });
+
+// Carrega o componente flutuante do BobIA nas telas públicas com navbar
+if (!document.getElementById("script-bobia-component")) {
+    const scriptBobia = document.createElement("script");
+    scriptBobia.id = "script-bobia-component";
+    scriptBobia.src = "js/componentes/bobia.js";
+    document.body.appendChild(scriptBobia);
+}

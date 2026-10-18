@@ -76,3 +76,11 @@ function setarTema(button) {
         }, 400);
     }
 }
+
+// Carrega automaticamente o componente flutuante do BobIA nas telas com sidebar
+if (!document.getElementById("script-bobia-component")) {
+    const scriptBobia = document.createElement("script");
+    scriptBobia.id = "script-bobia-component";
+    scriptBobia.src = "js/componentes/bobia.js";
+    document.body.appendChild(scriptBobia);
+}
