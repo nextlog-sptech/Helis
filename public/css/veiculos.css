@@ -73,6 +73,7 @@
           border: 1rem solid var(--fundo);
           border-radius: 10rem;
           background-color: var(--branco);
+          /* seta feita com gradientes para usar a variável de cor */
           background-image:
             linear-gradient(45deg, transparent 50%, var(--azulEscuro) 50%),
             linear-gradient(135deg, var(--azulEscuro) 50%, transparent 50%);
@@ -242,11 +243,11 @@
       .imagem {
         position: absolute;
         right: -50rem;
-        bottom: 10rem;
+        bottom: 0;
         width: 62%;
-        height: 78%;
-        object-fit: cover;
-        object-position: left center;
+        height: 100%;
+        object-fit: contain;
+        object-position: center bottom;
         pointer-events: none;
       }
     }
@@ -286,13 +287,31 @@
   }
 }
 
-.userButton {
-  background-color: color-mix(in srgb, var(--cinza) 35%, var(--branco));
-  color: var(--azulEscuro);
-  text-decoration: none;
-
-  i {
+main .main-posLogin .topo {
+  .titulo {
     font-size: 32rem;
+  }
+
+  .user {
+    gap: 24rem;
+
+    .userButton {
+      width: 50rem;
+      height: 50rem;
+      background-color: color-mix(in srgb, var(--cinza) 35%, var(--branco));
+      color: var(--azulEscuro);
+      text-decoration: none;
+
+      i {
+        font-size: 24rem;
+      }
+    }
+
+    .buttonSair {
+      width: 130rem;
+      height: 34rem;
+      font-size: 16rem;
+    }
   }
 }
 
@@ -360,7 +379,7 @@
     }
   }
 
-  .main-posLogin {
+  main .main-posLogin {
     padding-inline: 16rem;
     padding-top: 16rem;
 
