@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <!-- Gradientes -->
+    <linearGradient id="bgCircle" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F1F5F9"/>
+    </linearGradient>
+
+    <linearGradient id="capGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#006FCA"/>
+      <stop offset="100%" stop-color="#004D8D"/>
+    </linearGradient>
+
+    <linearGradient id="visorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A202C"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+
+    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E2E8F0"/>
+    </linearGradient>
+
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFA040"/>
+      <stop offset="100%" stop-color="#FF7800"/>
+    </linearGradient>
+
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Fundo Circular Perfeito e Nítido -->
+  <circle cx="64" cy="64" r="62" fill="url(#bgCircle)" stroke="#E2E8F0" stroke-width="2"/>
+
+  <!-- Sombrinha sutil na base -->
+  <ellipse cx="64" cy="115" rx="34" ry="6" fill="#000000" opacity="0.08"/>
+
+  <!-- CORPO DO ROBÔ -->
+  <g id="body" filter="url(#dropShadow)">
+    <!-- Tronco -->
+    <path d="M 44 82 C 44 76, 84 76, 84 82 L 88 108 C 88 114, 40 114, 40 108 Z" fill="url(#bodyGrad)" stroke="#CBD5E1" stroke-width="1.5"/>
+    
+    <!-- Detalhe Peitoral / Logotipo NextLog Laranja -->
+    <path d="M 52 92 C 58 90, 70 90, 76 92 C 72 98, 56 98, 52 92 Z" fill="url(#orangeGrad)"/>
+    <circle cx="64" cy="103" r="3" fill="#006FCA"/>
+
+    <!-- Braço Esquerdo segurando Prancheta/Tablet -->
+    <path d="M 43 83 C 33 87, 28 97, 34 104 C 38 109, 45 106, 48 99" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+    <path d="M 43 83 C 33 87, 28 97, 34 104 C 38 109, 45 106, 48 99" fill="none" stroke="#CBD5E1" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Tablet / Prancheta Digital de Logística -->
+    <rect x="22" y="86" width="20" height="26" rx="3" transform="rotate(-15 32 99)" fill="#004D8D" stroke="#006FCA" stroke-width="1.5"/>
+    <rect x="24" y="88" width="16" height="20" rx="2" transform="rotate(-15 32 99)" fill="#1E293B"/>
+    <!-- Linhas na tela do tablet -->
+    <line x1="27" y1="92" x2="35" y2="90" stroke="#FF7800" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="28" y1="96" x2="37" y2="94" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="29" y1="100" x2="36" y2="98" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Dedinhos do robô segurando o tablet -->
+    <circle cx="34" cy="99" r="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+
+    <!-- Braço Direito dando Joinha (Thumbs up) -->
+    <path d="M 85 83 C 94 86, 99 92, 97 99 C 95 103, 90 104, 86 100" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+    <path d="M 85 83 C 94 86, 99 92, 97 99 C 95 103, 90 104, 86 100" fill="none" stroke="#CBD5E1" stroke-width="1.5" stroke-linecap="round"/>
+    
+    <!-- Mão com Polegar levantado (Joinha) -->
+    <ellipse cx="98" cy="93" rx="5" ry="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+    <!-- Polegar para cima -->
+    <path d="M 97 93 C 96 85, 102 85, 103 91 Z" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+  </g>
+
+  <!-- CABEÇA DO BOBIA -->
+  <g id="head" filter="url(#dropShadow)">
+    <!-- Orelhas / Fone Lateral -->
+    <rect x="23" y="44" width="7" height="18" rx="3.5" fill="url(#orangeGrad)"/>
+    <rect x="98" y="44" width="7" height="18" rx="3.5" fill="url(#orangeGrad)"/>
+    <circle cx="26.5" cy="53" r="2" fill="#004D8D"/>
+    <circle cx="101.5" cy="53" r="2" fill="#004D8D"/>
+
+    <!-- Base da Cabeça Branca com Contorno Macio -->
+    <rect x="27" y="32" width="74" height="46" rx="23" fill="url(#bodyGrad)" stroke="#CBD5E1" stroke-width="1.5"/>
+
+    <!-- Boné de Caminhoneiro / Logística (Azul Helis) -->
+    <path d="M 33 42 C 34 22, 94 22, 95 42 Z" fill="url(#capGrad)"/>
+    <!-- Aba do Boné -->
+    <path d="M 27 41 C 45 35, 83 35, 101 41 C 101 44, 27 44, 27 41 Z" fill="#003B6D"/>
+    <!-- Detalhe frontal do boné (Botão/Emblema Laranja) -->
+    <ellipse cx="64" cy="30" rx="6" ry="3.5" fill="url(#orangeGrad)"/>
+
+    <!-- Visor Escuro de Alta Tecnologia -->
+    <rect x="34" y="42" width="60" height="30" rx="15" fill="url(#visorGrad)" stroke="#334155" stroke-width="1.5"/>
+
+    <!-- Brilho no reflexo superior do vidro do visor -->
+    <path d="M 44 45 C 54 44, 74 44, 84 45 C 80 47, 48 47, 44 45 Z" fill="#FFFFFF" opacity="0.25"/>
+
+    <!-- Olhos Digitais Expressivos e Sorridentes (Laranja Helis #FF7800) -->
+    <!-- Olho Esquerdo (Arco Curvado Feliz) -->
+    <path d="M 45 57 C 47 50, 55 50, 57 57" fill="none" stroke="url(#orangeGrad)" stroke-width="4" stroke-linecap="round"/>
+    <!-- Olho Direito (Arco Curvado Feliz) -->
+    <path d="M 71 57 C 73 50, 81 50, 83 57" fill="none" stroke="url(#orangeGrad)" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Bochechinhas / Blush Digital sutil -->
+    <ellipse cx="43" cy="62" rx="3" ry="1.5" fill="#FF7800" opacity="0.5"/>
+    <ellipse cx="85" cy="62" rx="3" ry="1.5" fill="#FF7800" opacity="0.5"/>
+
+    <!-- Anteninha com luz Wi-Fi / Conexão no topo do boné -->
+    <line x1="64" y1="22" x2="64" y2="16" stroke="#94A3B8" stroke-width="2"/>
+    <circle cx="64" cy="15" r="3" fill="url(#orangeGrad)"/>
+  </g>
+</svg>

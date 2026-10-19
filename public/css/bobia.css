@@ -1,0 +1,533 @@
+/* ==========================================================================
+   BOBIA - WIDGET DE SUPORTE OPERACIONAL (NEXTLOG / HELIS)
+   Design corporativo e consistente com o restante da plataforma.
+   Sem estética genérica/clichê de IA. Suporte a tema Claro e Escuro.
+   ========================================================================== */
+
+/* --- Botão Flutuante (Launcher) --- */
+.bobia-widget-container {
+    position: fixed;
+    bottom: 30px;
+    right: 35px;
+    z-index: 9999;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.bobia-launcher {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--branco);
+    border: 2px solid var(--azul);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, border-color 0.2s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.bobia-launcher:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 24px rgba(0, 111, 202, 0.22);
+    border-color: var(--laranja);
+}
+
+.bobia-launcher:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.bobia-launcher-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    pointer-events: none;
+    display: block;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.bobia-launcher-close-icon {
+    position: absolute;
+    display: none;
+    font-size: 20rem;
+    color: var(--laranja);
+    transition: transform 0.2s ease;
+}
+
+.bobia-widget-container.ativo .bobia-launcher {
+    border-color: var(--laranja);
+    background-color: var(--branco);
+}
+
+.bobia-widget-container.ativo .bobia-launcher-avatar {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+    display: none;
+}
+
+.bobia-widget-container.ativo .bobia-launcher-close-icon {
+    display: block;
+    animation: bobiaRotateIn 0.25s ease forwards;
+}
+
+/* Indicador de status online */
+.bobia-launcher-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #10B981;
+    border: 2px solid var(--branco);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.3s ease;
+}
+
+/* Tooltip opcional ao passar o mouse */
+.bobia-launcher-tooltip {
+    position: absolute;
+    right: 72px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--azulEscuro);
+    color: #FFFFFF;
+    font-size: 13rem;
+    font-weight: 500;
+    padding: 7px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+.bobia-launcher-tooltip::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 6px 0 6px 6px;
+    border-style: solid;
+    border-color: transparent transparent transparent var(--azulEscuro);
+}
+
+.bobia-launcher:hover .bobia-launcher-tooltip {
+    opacity: 1;
+    transform: translateY(-50%) translateX(-4px);
+}
+
+.bobia-widget-container.ativo .bobia-launcher-tooltip {
+    display: none !important;
+}
+
+/* --- Janela de Suporte (Janela do Chat) --- */
+.bobia-modal {
+    display: none;
+    flex-direction: column;
+    width: 380px;
+    height: 540px;
+    max-height: calc(100vh - 120px);
+    background-color: var(--branco);
+    border-radius: 20px;
+    border: 1px solid var(--cinza2);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.06);
+    margin-bottom: 14px;
+    overflow: hidden;
+    transform-origin: bottom right;
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+}
+
+.bobia-widget-container.ativo .bobia-modal {
+    display: flex;
+    animation: bobiaPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Header */
+.bobia-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    background-color: var(--branco);
+    border-bottom: 1px solid var(--cinza2);
+    box-sizing: border-box;
+}
+
+.bobia-header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bobia-header-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--azul);
+    background-color: var(--fundo);
+    flex-shrink: 0;
+}
+
+.bobia-header-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.bobia-header-title {
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 16rem;
+    font-weight: 600;
+    color: var(--azulEscuro);
+    line-height: 1.2;
+}
+
+.bobia-header-subtitle {
+    font-size: 12rem;
+    font-weight: 500;
+    color: var(--cinza);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.bobia-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #10B981;
+    display: inline-block;
+}
+
+.bobia-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.bobia-header-btn {
+    background: transparent;
+    border: none;
+    color: var(--cinza);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.bobia-header-btn:hover {
+    background-color: var(--fundo);
+    color: var(--laranja);
+}
+
+/* Área de Mensagens */
+.bobia-messages {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    background-color: var(--fundo);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+.bobia-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.bobia-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.bobia-messages::-webkit-scrollbar-thumb {
+    background-color: var(--cinza2);
+    border-radius: 6px;
+}
+
+.bobia-message-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    width: 100%;
+}
+
+.bobia-message-row.usuario {
+    justify-content: flex-end;
+}
+
+.bobia-message-row.bobia {
+    justify-content: flex-start;
+}
+
+.bobia-msg-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid var(--azul);
+    background-color: var(--branco);
+}
+
+.bobia-bubble {
+    max-width: 78%;
+    padding: 11px 15px;
+    font-size: 14rem;
+    line-height: 1.45;
+    word-break: break-word;
+    border-radius: 14px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.bobia-message-row.usuario .bobia-bubble {
+    background-color: var(--azul);
+    color: #FFFFFF;
+    border-bottom-right-radius: 4px;
+    font-weight: 400;
+}
+
+.bobia-message-row.bobia .bobia-bubble {
+    background-color: var(--branco);
+    color: var(--texto);
+    border: 1px solid var(--cinza2);
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Tipografia interna dos retornos markdown/texto */
+.bobia-bubble p {
+    margin: 0;
+    font-size: 14rem;
+}
+
+.bobia-bubble p + p {
+    margin-top: 6px;
+}
+
+.bobia-bubble strong {
+    font-weight: 600;
+    color: inherit;
+}
+
+.bobia-msg-time {
+    font-size: 11rem;
+    color: var(--cinza);
+    margin-top: 4px;
+    align-self: flex-end;
+}
+
+.bobia-message-row.usuario .bobia-msg-time {
+    color: rgba(255, 255, 255, 0.8);
+    text-align: right;
+}
+
+/* Indicador de digitação (Pensando...) */
+.bobia-typing-indicator {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 14px;
+    background-color: var(--branco);
+    border: 1px solid var(--cinza2);
+    border-radius: 14px;
+    border-bottom-left-radius: 4px;
+    width: fit-content;
+}
+
+.bobia-typing-indicator.ativo {
+    display: flex;
+}
+
+.bobia-typing-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--azul);
+    border-radius: 50%;
+    animation: bobiaPulse 1.2s infinite ease-in-out;
+}
+
+.bobia-typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+    background-color: var(--laranja);
+}
+
+.bobia-typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+    background-color: var(--azulEscuro);
+}
+
+/* Sugestões rápidas */
+.bobia-quick-suggestions {
+    display: flex;
+    gap: 6px;
+    padding: 8px 14px;
+    background-color: var(--branco);
+    border-top: 1px solid var(--cinza2);
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+}
+
+.bobia-quick-suggestions::-webkit-scrollbar {
+    display: none;
+}
+
+.bobia-suggestion-chip {
+    background-color: var(--fundo);
+    border: 1px solid var(--cinza2);
+    color: var(--azulEscuro);
+    font-size: 12rem;
+    font-weight: 500;
+    padding: 5px 11px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.bobia-suggestion-chip:hover {
+    background-color: var(--azul);
+    color: #FFFFFF;
+    border-color: var(--azul);
+}
+
+/* Footer / Input de Mensagem */
+.bobia-footer {
+    padding: 12px 14px;
+    background-color: var(--branco);
+    border-top: 1px solid var(--cinza2);
+    box-sizing: border-box;
+}
+
+.bobia-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--fundo);
+    border: 1px solid var(--cinza2);
+    border-radius: 24px;
+    padding: 4px 6px 4px 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bobia-form:focus-within {
+    border-color: var(--azul);
+    box-shadow: 0 0 0 2px rgba(0, 111, 202, 0.15);
+    background-color: var(--branco);
+}
+
+.bobia-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 14rem;
+    color: var(--texto);
+    padding: 6px 0;
+}
+
+.bobia-input::placeholder {
+    color: var(--cinza);
+    font-size: 13rem;
+}
+
+.bobia-send-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--laranja);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14rem;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.bobia-send-btn:hover {
+    background-color: #E66C00;
+    transform: scale(1.05);
+}
+
+.bobia-send-btn:active {
+    transform: scale(0.95);
+}
+
+.bobia-send-btn:disabled {
+    background-color: var(--cinza2);
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Animações */
+@keyframes bobiaPopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(16px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes bobiaRotateIn {
+    0% {
+        transform: rotate(-90deg) scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: rotate(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes bobiaPulse {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+    }
+    30% {
+        transform: translateY(-4px);
+        opacity: 1;
+    }
+}
+
+/* --- Responsividade (Telas Pequenas / Mobile) --- */
+@media (max-width: 600px) {
+    .bobia-widget-container {
+        bottom: 20px;
+        right: 20px;
+    }
+
+    .bobia-modal {
+        width: calc(100vw - 40px);
+        height: calc(100vh - 120px);
+        max-height: 520px;
+    }
+}
