@@ -9,7 +9,7 @@ const veiculos = [
   { nome: 'Scania R450', placa: 'JKL4M55', frete: 2750, viagens: 29, km: 640, tipo: 'Caminhão', bau: 'Sider', status: 'ativo', marca: 'Scania', modelo: 'R450' },
 ];
 
-const IMAGEM_CAMINHAO = 'assets/imgs/veiculo.png';
+const IMAGEM_CAMINHAO = 'assets/imgs/Truck.png';
 
 const el = {
   form: document.getElementById('form-filtros'),
@@ -52,7 +52,9 @@ function criarCard(v) {
         <div class="item"><small>Tipo Veículo</small><strong>${escapar(v.tipo)}</strong></div>
         <div class="item"><small>Tipo Baú</small><strong>${escapar(v.bau)}</strong></div>
       </div>
-      <img class="imagem" src="${IMAGEM_CAMINHAO}" alt="Caminhão ${escapar(v.nome)}">
+      <div class ="img-veiculo">
+      <img  src="${IMAGEM_CAMINHAO}" alt="Caminhão ${escapar(v.nome)}">
+     </div>
     </article>`;
 }
 
