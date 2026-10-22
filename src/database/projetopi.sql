@@ -1,5 +1,5 @@
-create database projetopi;
-use projetopi;
+create database helis;
+use helis;
 
 create table endereco(
     idEndereco int primary key auto_increment,
