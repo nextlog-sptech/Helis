@@ -179,7 +179,7 @@
       .placa {
         position: absolute;
         top: 16rem;
-        left: 205rem;
+        left: 250rem;
         background-color: var(--azulEscuro);
         color: var(--branco);
         padding: 7rem 12rem;
@@ -240,7 +240,7 @@
         }
       }
 
-      .imagem {
+      .img-veiculo {
         position: absolute;
         right: -50rem;
         bottom: 0;
@@ -249,7 +249,21 @@
         object-fit: contain;
         object-position: center bottom;
         pointer-events: none;
+        
+        img {
+          width: auto;
+          height: 700px;
+          object-fit: cover;
+          object-position: left;
+          position: absolute;
+          left: 0%;
+          top: -160px;
+      
+         
+        }
       }
+
+
     }
   }
 
@@ -461,6 +475,7 @@ main .main-posLogin .topo {
 
 @media (max-width: 600px) {
   .conteudo-veiculos {
+
     .quantidade,
     .quantidade span {
       font-size: 17rem;

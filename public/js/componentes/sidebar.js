@@ -11,12 +11,13 @@ sidebar.innerHTML = `
                 <a href="veiculos.html" id="linkVeiculo" class="link">
                     <i class="fa-solid fa-truck"></i> Veículos
                 </a>
+                   <a href="comercial.html" id="linkFinancas" class="link">
+                    <i class="fa-solid fa-wallet"></i> Comercial
+                </a>
                 <a href="motoristas.html"  id="linkMoto"class="link">
-                    <i class="fa-solid fa-user"></i> Motoristas
+                    <i class="fa-solid fa-user"></i> Funcionários
                 </a>
-                <a href="financas.html" id="linkFinancas" class="link">
-                    <i class="fa-solid fa-wallet"></i> Finanças
-                </a>
+             
             </div>
 `;
 
@@ -27,7 +28,7 @@ userNav.innerHTML = `
 
 const paginaAtual = window.location.pathname.split("/").pop();
 
-// Todos os links
+
 const links = sidebar.querySelectorAll(".link");
 
 links.forEach((link) => {

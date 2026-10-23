@@ -12,27 +12,14 @@
 
 <body>
   <main>
-
-    <!-- Sidebar global (.sidebar - global.css) -->
-    <aside class="sidebar">
-      <a class="logo" href="index.html"><img src="assets/icon/logo.png" alt="Logo NextLog"></a>
-      <nav class="links">
-        <a class="link" href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a>
-        <a class="link" href="fretes.html"><i class="fa-solid fa-cube"></i> Fretes</a>
-        <a class="link ativo" href="veiculos.html"><i class="fa-solid fa-truck"></i> Veículos</a>
-        <a class="link" href="financas.html"><i class="fa-solid fa-wallet"></i> Finanças</a>
-        <a class="link" href="funcionarios.html"><i class="fa-regular fa-user"></i> Funcionários</a>
-      </nav>
-    </aside>
-
-    <!-- Estrutura pós-login global (.main-posLogin / .topo / .user / .conteudo - global.css) -->
+      <div class="sidebar" id="sidebar"></div>
     <div class="main-posLogin">
-      <div class="topo">
-        <h1 class="titulo">Veículos</h1>
-        <div class="user">
-          <a class="userButton" href="perfil.html" aria-label="Perfil"><i class="fa-regular fa-user"></i></a>
-          <a class="buttonSair" href="login.html" id="btn-sair">Sair</a>
-        </div>
+       <div class="topo">
+                <div class="titulo">
+                    Veículos
+                </div>
+                <div class="user" id="userNav"></div>
+           
       </div>
 
       <div class="conteudo conteudo-veiculos">
@@ -84,9 +71,12 @@
     </div>
   </main>
 
-  <button class="chatbot" type="button" aria-label="Assistente virtual"><i class="fa-solid fa-robot"></i></button>
 
+  
+    <script src="js/componentes/sidebar.js"></script>
+    <script src="js/session.js"></script>
   <script src="js/veiculos.js"></script>
+
 </body>
 
 </html>
