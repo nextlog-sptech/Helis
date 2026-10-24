@@ -342,10 +342,25 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
     flex-shrink: 0;
 }
 
+
 /* ===== Responsivo ===== */
 @media (max-width: 1200px) {
+    .kpis {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        height: auto;
+        padding: 10px 0;
+    }
 
-    /* telas médias: cada card ocupa a linha inteira */
+    .kpi {
+        height: auto;
+        padding: 12px 22px;
+    }
+
+    .kpi+.kpi {
+        border-left: none;
+    }
+
     .graficoEhTabela,
     .graficosAbaixo {
         flex-wrap: wrap;
@@ -355,6 +370,10 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
     .estado,
     .graficosAbaixo .periodo {
         flex: 1 1 100%;
+    }
+
+    .graficosAbaixo .rosca {
+        flex: 1 1 calc(50% - 10px);
     }
 
     .estado {
@@ -367,16 +386,57 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
 }
 
 @media (max-width: 800px) {
-
-    .graficoEhTabela,
-    .graficosAbaixo {
+    .kpi {
         flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 6px;
+        padding: 14px 18px;
+    }
+
+    .kpi h3 {
+        font-size: 14px;
+    }
+
+    .kpi a {
+        font-size: 20px;
+    }
+
+    .card .img1,
+    .card .img2,
+    .card .img3,
+    .card .img4 {
+        width: 32px;
+        height: 32px;
+    }
+
+    .card .img1 i,
+    .card .img2 i,
+    .card .img3 i,
+    .card .img4 i {
+        font-size: 22px;
+    }
+
+    .graficoEhTabela {
+        flex-direction: column;
+        flex-wrap: nowrap;
     }
 
     .tabela,
     .estado {
+        flex: 1 1 auto;
         min-height: auto;
         padding: 20px 16px;
+    }
+
+    .tabela-titulo i,
+    .grafico-titulo i {
+        font-size: 22rem;
+    }
+
+    .tabela-titulo span,
+    .grafico-titulo span {
+        font-size: 16rem;
     }
 
     .estado .grafico-corpo {
@@ -384,13 +444,13 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
     }
 
     .graficosAbaixo .rosca {
-        flex: 1 1 auto;
+        flex: 1 1 calc(50% - 10px);
         min-height: auto;
-        padding: 20px 16px;
+        padding: 16px 12px;
     }
 
     .graficosAbaixo .periodo {
-        flex: 1 1 auto;
+        flex: 1 1 100%;
         padding: 20px 16px;
     }
 
@@ -398,7 +458,45 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
         min-height: 240px;
     }
 
+    .rosca-titulo {
+        gap: 8px;
+    }
+
+    .rosca-titulo i {
+        font-size: 18rem;
+    }
+
+    .rosca-titulo span {
+        font-size: 14rem;
+    }
+
     .rosca-corpo {
+        flex-direction: column;
+        flex-wrap: nowrap;
         justify-content: center;
+        gap: 16px;
+        margin-top: 10px;
+    }
+
+    .rosca-legenda {
+        gap: 10px;
+    }
+
+    .legenda-item {
+        gap: 8px;
+    }
+
+    .legenda-item p {
+        font-size: 12rem;
+    }
+
+    .bolinha {
+        width: 12px;
+        height: 12px;
+    }
+
+    .rosca-grafico {
+        width: 110px;
+        height: 110px;
     }
 }

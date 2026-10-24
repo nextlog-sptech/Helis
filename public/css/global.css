@@ -102,6 +102,7 @@
          border-radius: 26px;
          padding: 0px;
          margin: 0px;
+                     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.089);
 
          a {
              font-size: 25rem;
@@ -365,3 +366,93 @@
              }
      }
  }
+ @media (max-width: 800px) {
+    main {
+        flex-direction: column;
+
+        .main-posLogin {
+            flex: 1 1 auto;
+            min-width: 0;
+            padding-inline: 12px;
+            padding-top: 12px;
+
+            .topo {
+                align-items: center;
+
+                .titulo {
+                    font-size: 26rem;
+                }
+
+                .user {
+                    position: fixed;
+                    top: 10px;
+                    right: 8px;
+                    z-index: 100;
+                    gap: 4px;
+
+                    .userButton {
+                        width: 34px;
+                        height: 34px;
+                    }
+
+                    .temaButton i {
+                        font-size: 18px;
+                    }
+
+                    .buttonSair {
+                        width: 34px;
+                        height: 34px;
+                        padding: 0;
+                        font-size: 0;
+                        border-radius: 50%;
+
+                        &::before {
+                            content: "\f2f5";
+                            font-family: "Font Awesome 6 Free";
+                            font-weight: 900;
+                            font-size: 16px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .conteudo {
+            margin-top: 20px;
+        }
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 88px 10px 8px;
+        z-index: 99;
+        background-color: var(--fundo);
+
+        .logo {
+            width: 46px;
+        }
+
+        .links {
+            flex-direction: row;
+            gap: 0;
+            margin-top: 0;
+
+            .link {
+                width: 34px;
+                height: 34px;
+                padding-inline: 0;
+                justify-content: center;
+                gap: 0;
+                font-size: 0;
+
+                i {
+                    font-size: 18px;
+                }
+            }
+        }
+    }
+}

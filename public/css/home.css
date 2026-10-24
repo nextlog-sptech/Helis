@@ -18,13 +18,15 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
  Aqui só sobrepomos ele em cima da imagem do header, só nesta página. */
  #navbar.nav-hero {
    position: sticky;
+   top:0px;
+   left: 0px;
    z-index: 10;
-   margin-bottom: -96rem;
+   margin-bottom: -110rem;
  }
 
  .hero {
    position: relative;
-   min-height: 460rem;
+   min-height: 500rem;
    display: flex;
    align-items: flex-end;
    background-image:
@@ -32,7 +34,6 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
      url('../assets/imgs/home.jpg');
    background-size: cover;
    background-position: center;
-
    .hero-content {
      padding: 90rem 44rem 70rem;
      max-width: 900rem;

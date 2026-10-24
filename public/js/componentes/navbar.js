@@ -4,9 +4,9 @@ navbar.innerHTML =`
      <div class="esquerda" >
       <a class="logo" href="index.html"><img src="assets/icon/logo.png" alt=""></a>
       <div class="links">
-        <a href="">Início</a>
-        <a href="#sobre">Sobre</a>
-        <a href="#contato">Contato</a>
+        <a href="index.html">Início</a>
+        <a href="index.html#sobre">Sobre</a>
+        <a href="index.html#contato">Contato</a>
       </div>
     </div>
     <div class="entradas" id="loginsCadastroNav">
