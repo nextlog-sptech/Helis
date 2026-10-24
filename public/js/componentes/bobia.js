@@ -4,7 +4,8 @@
     if (document.getElementById('bobia-widget-container')) {
         return;
     }
-
+    const tela = window.location.href
+   if (tela.includes("index") || tela.includes("login") || tela.includes("cadastro")) return;
     const container = document.createElement('div');
     container.id = 'bobia-widget-container';
     container.className = 'bobia-widget-container';

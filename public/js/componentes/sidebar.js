@@ -23,8 +23,8 @@ sidebar.innerHTML = `
 
 userNav.innerHTML = `
  <button onclick="setarTema(true)" href="" class="userButton temaButton"> <i class="fa-regular   fa-sun"></i></button>
-<a href="" class="userButton"><img src="https://st.depositphotos.com/1779253/5140/v/450/depositphotos_51405259-stock-illustration-male-avatar-profile-picture-use.jpg" alt=""></a>
-                    <a href="" class="buttonSair">Sair</a>`;
+
+                    <a href="" class="buttonSair" onclick="sessionStorage.clear()">Sair</a>`;
 
 const paginaAtual = window.location.pathname.split("/").pop();
 
