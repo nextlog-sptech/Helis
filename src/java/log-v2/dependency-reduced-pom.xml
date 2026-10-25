@@ -8,7 +8,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.6.0</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -18,20 +18,10 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>sptech.schoolParOuImpar</mainClass>
+                  <mainClass>sptech.school.Main</mainClass>
                 </transformer>
+                <transformer />
               </transformers>
-              <filters>
-                <filter>
-                  <artifact>*:*</artifact>
-                  <excludes>
-                    <exclude>**/Log4j*.class</exclude>
-                    <exclude>**/META-INF/*.SF</exclude>
-                    <exclude>**/META-INF/*.DSA</exclude>
-                    <exclude>**/META-INF/*.RSA</exclude>
-                  </excludes>
-                </filter>
-              </filters>
             </configuration>
           </execution>
         </executions>

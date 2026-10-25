@@ -12,9 +12,9 @@ public class Conexao {
 
         DriverManagerDataSource driver = new DriverManagerDataSource();
 
-        driver.setUsername("");
-        driver.setPassword("");
-        driver.setUrl("jdbc:mysql://IP_PUBLICO_EC2:3306/projetopi");
+        driver.setUsername("root");
+        driver.setPassword("Finsacademicos29@");
+        driver.setUrl("jdbc:mysql://localhost:3306/projetopi");
         driver.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.conexao = driver;
     }
