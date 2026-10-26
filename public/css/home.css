@@ -26,7 +26,7 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
 
  .hero {
    position: relative;
-   min-height: 500rem;
+   min-height: 650rem;
    display: flex;
    align-items: flex-end;
    background-image:
@@ -98,6 +98,7 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
    cursor: pointer;
    box-shadow: 0 8rem 22rem rgba(255, 120, 0, .35);
    transition: 200ms;
+   margin-top: 20rem;
 
    .circle {
      width: 26rem;
