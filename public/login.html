@@ -29,17 +29,19 @@
           <div class="campo">
             <label for="ipt_user" class="label-title">E-mail ou CNPJ</label>
             <div class="input-email-wrapper">
-              <input type="text" id="ipt_user" class="input" placeholder="Insira seu email">
+              <input type="text" id="ipt_user" class="input" placeholder="Insira seu email" aria-describedby="mensagem-ipt_user">
               <i class="fa-regular fa-user"></i>
             </div>
+            <span id="mensagem-ipt_user" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
           </div>
           <div class="campo">
             <label for="ipt_password" class="label-title">Senha</label>
             <div class="input-senha-wrapper">
-              <input type="password" id="ipt_password" class="input" placeholder="Insira sua senha">
+              <input type="password" id="ipt_password" class="input" placeholder="Insira sua senha" aria-describedby="mensagem-ipt_password">
               <i class="fa-solid fa-eye-slash" id="toggle-senha"></i>
             </div>
-            <a href="" class="links">Esqueceu a senha?</a>
+            <span id="mensagem-ipt_password" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
+            <!-- <a href="" class="links">Esqueceu a senha?</a> -->
           </div>
           <div class="campo-entrar">
             <button id="botao_entrar" class="botao-entrar">

@@ -1,5 +1,5 @@
-create database projetopi;
-use projetopi;
+create database helis;
+use helis;
 
 create table endereco(
     idEndereco int primary key auto_increment,
@@ -31,7 +31,7 @@ create table usuario(
     email varchar(60),
     telefone char(11),
     cargo varchar(30),
-    senha varchar(45),
+    senha varchar(255),
     empresaId int,
     constraint fkUsuarioEmpresa
         foreign key(empresaId)
@@ -130,9 +130,12 @@ create table log(
     idLog int primary key auto_increment,
     tipo varchar(45),
     horario datetime,
-    mensagem varchar(45),
-    servico varchar(45)
+    mensagem varchar(300),
+    servico varchar(45),
+    qtdRegistrosLidos INT,
+    tempoLeituraMs BIGINT
 );
+
 
 INSERT INTO endereco (cep, numero, logradouro, complemento, bairro, cidade)
 VALUES

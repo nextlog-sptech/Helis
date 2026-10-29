@@ -18,11 +18,13 @@
         <div class="main-posLogin">
             <div class="topo">
                 <div class="titulo">
-                Bem-vindo(a, Fernanda)
+                    Bem vindo, Fernanda
                 </div>
                 <div class="user" id="userNav"></div>
             </div>
             <div class="conteudo">
+
+                <!-- KPIs -->
                 <div class="kpis card">
                     <div class="kpi">
                         <div class="img">
@@ -70,6 +72,8 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Linha 1: tabela + fretes por estado -->
                 <div class="graficoEhTabela">
                     <div class="tabela card">
                         <div class="tabela-titulo">
@@ -130,7 +134,19 @@
 
                         <a href="fretes.html" class="ver-mais">Ver mais</a>
                     </div>
+
+                    <div class="estado card">
+                        <div class="grafico-titulo">
+                            <i class="fa-solid fa-truck-fast"></i>
+                            <span>Fretes por estado</span>
+                        </div>
+                        <div class="grafico-corpo">
+                            <canvas id="fretesChart"></canvas>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Linha 2: tipos de baú + fretes por região + fretes por período -->
                 <div class="graficosAbaixo">
                     <div class="rosca card">
                         <div class="rosca-titulo">
@@ -155,6 +171,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="rosca rosca-regiao card">
                         <div class="rosca-titulo">
                             <i class="fa-solid fa-map-location-dot"></i>
@@ -169,16 +186,26 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card"></div>
 
+                    <div class="periodo card">
+                        <div class="grafico-titulo">
+                            <i class="fa-solid fa-truck-fast"></i>
+                            <span>Fretes por período</span>
+                        </div>
+                        <div class="grafico-corpo">
+                            <canvas id="periodoChart"></canvas>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </main>
+
+    <script src="js/componentes/sidebar.js"></script>
+    <script src="js/session.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dasboard.js"></script>
 </body>
-<script src="js/componentes/sidebar.js"></script>
-<script src="js/session.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="js/dasboard.js"></script>
 
 </html>

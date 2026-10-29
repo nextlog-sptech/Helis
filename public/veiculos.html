@@ -1,35 +1,82 @@
 <!DOCTYPE html>
-<html lang="PT-BR">
+<html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="assets/icon/logo.svg" type="image/x-icon">
-    <title>Home</title>
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/veiculos.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="assets/icon/icon.png" type="image/x-icon">
+  <title>NextLog | Veículos</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/veiculos.css">
 </head>
-<!-- Cada página possui seu próprio arquivo JS e CSS. Dê preferência ao uso dos arquivos existentes e, caso seja necessário, crie novos arquivos. -->
 
 <body>
-
-    <main>
-        <div class="sidebar" id="sidebar"></div>
-        <div class="main-posLogin">
-            <div class="topo">
+  <main>
+      <div class="sidebar" id="sidebar"></div>
+    <div class="main-posLogin">
+       <div class="topo">
                 <div class="titulo">
-                   Veículos
+                    Veículos
                 </div>
                 <div class="user" id="userNav"></div>
+           
+      </div>
+
+      <div class="conteudo conteudo-veiculos">
+
+        <!-- Filtros -->
+        <form class="filtros" id="form-filtros">
+          <div class="busca">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="busca-placa" placeholder="Buscar por placa" autocomplete="off">
+          </div>
+
+          <div class="filtros-corpo">
+            <div class="selects">
+              <label class="campo">
+                <span>Status</span>
+                <select id="filtro-status">
+                  <option value="">Todos</option>
+                  <option value="ativo">Ativo</option>
+                  <option value="manutencao">Em manutenção</option>
+                  <option value="inativo">Inativo</option>
+                </select>
+              </label>
+              <label class="campo">
+                <span>Marca</span>
+                <select id="filtro-marca">
+                  <option value="">Qualquer</option>
+                </select>
+              </label>
+              <label class="campo">
+                <span>Modelo</span>
+                <select id="filtro-modelo">
+                  <option value="">Qualquer</option>
+                </select>
+              </label>
             </div>
-            <div class="conteudo">
-                Coloque o conteudo da pagina aqui
+
+            <div class="acoes">
+              <button type="submit" class="btn-filtrar">Filtrar</button>
+              <button type="button" class="btn-limpar" id="btn-limpar">Limpar filtros</button>
             </div>
-        </div>
-    </main>
+          </div>
+        </form>
+
+        <p class="quantidade">Quantidade: <span id="quantidade">0</span></p>
+
+        <section class="lista-veiculos" id="lista-veiculos"></section>
+        <p class="sem-resultado" id="sem-resultado" hidden>Nenhum veículo encontrado.</p>
+      </div>
+    </div>
+  </main>
+
+
+  
+    <script src="js/componentes/sidebar.js"></script>
+    <script src="js/session.js"></script>
+  <script src="js/veiculos.js"></script>
+
 </body>
-<script src="js/componentes/sidebar.js"></script>
-<script src="js/session.js"></script>
-<script src="js/veiculos.js"></script>
 
 </html>

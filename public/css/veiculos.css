@@ -1,16 +1,530 @@
+.conteudo-veiculos {
+  padding-right: 20rem;
+  padding-bottom: 120rem;
 
- /* Por favor usem as variaveis para facilitar a configuração do modo escuro  */
- /* Usem tbm o 'rem' inves do px, nas letras para facilitar a resposividade */
- 
- /*
- Exemplo de como usar as variaveis de cor e o rem
- .componente{
-    font-size: 30rem;
-    background-color:var(--F6F6F6);
-    color:var(--laranja);
-    border-color:var(--azul);
- } 
-As variaveis estão declaradas no arquivo global.css
-Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
-    
- */
+  .filtros {
+    background-color: var(--branco);
+    border-radius: 24rem;
+    box-shadow: 0 2rem 10rem rgba(0, 30, 70, .06);
+    overflow: hidden;
+
+    .busca {
+      position: relative;
+      padding: 20rem 30rem;
+      border-bottom: 1rem solid var(--cinza);
+
+      i {
+        position: absolute;
+        left: 48rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--cinza);
+        font-size: 17rem;
+      }
+
+      input {
+        box-sizing: border-box;
+        width: 330rem;
+        height: 46rem;
+        padding: 0 16rem 0 46rem;
+        border: 1rem solid var(--fundo);
+        border-radius: 10rem;
+        background-color: var(--branco);
+        font-family: 'Lexend Deca', sans-serif;
+        font-size: 15rem;
+        color: var(--azulEscuro);
+
+        &::placeholder {
+          color: var(--cinza);
+        }
+
+        &:focus {
+          outline: 2rem solid var(--azul);
+        }
+      }
+    }
+
+    .filtros-corpo {
+      padding: 14rem 30rem 22rem;
+
+      .selects {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24rem;
+      }
+
+      .campo {
+        display: flex;
+        flex-direction: column;
+        gap: 6rem;
+
+        span {
+          color: var(--azul);
+          font-size: 14rem;
+          font-weight: 500;
+        }
+
+        select {
+          appearance: none;
+          box-sizing: border-box;
+          width: 232rem;
+          height: 46rem;
+          padding: 0 40rem 0 16rem;
+          border: 1rem solid var(--fundo);
+          border-radius: 10rem;
+          background-color: var(--branco);
+          /* seta feita com gradientes para usar a variável de cor */
+          background-image:
+            linear-gradient(45deg, transparent 50%, var(--azulEscuro) 50%),
+            linear-gradient(135deg, var(--azulEscuro) 50%, transparent 50%);
+          background-repeat: no-repeat;
+          background-size: 6rem 6rem;
+          background-position: calc(100% - 22rem) 50%, calc(100% - 16rem) 50%;
+          font-family: 'Lexend Deca', sans-serif;
+          font-size: 15rem;
+          font-weight: 500;
+          color: var(--azulEscuro);
+          cursor: pointer;
+
+          &:focus {
+            outline: 2rem solid var(--azul);
+          }
+        }
+      }
+
+      .acoes {
+        display: flex;
+        align-items: center;
+        gap: 28rem;
+        margin-top: 18rem;
+
+        .btn-filtrar {
+          background-color: var(--azul);
+          color: var(--branco);
+          border: none;
+          height: 34rem;
+          padding: 0 38rem;
+          border-radius: 6rem;
+          font-family: 'Lexend Deca', sans-serif;
+          font-size: 15rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: 200ms;
+
+          &:hover {
+            background-color: var(--azulEscuro);
+            transform: translateY(-2rem);
+          }
+        }
+
+        .btn-limpar {
+          background: none;
+          border: none;
+          color: var(--laranja);
+          font-family: 'Lexend Deca', sans-serif;
+          font-size: 15rem;
+          cursor: pointer;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+
+  .quantidade {
+    margin: 26rem 0 14rem;
+    color: var(--azulEscuro);
+    font-size: 20rem;
+    font-weight: 600;
+
+    span {
+      font-size: 20rem;
+      font-weight: 600;
+    }
+  }
+
+  .lista-veiculos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28rem;
+
+    .card-veiculo {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      height: 292rem;
+      background-color: var(--branco);
+      border-radius: 24rem;
+      box-shadow: 0 2rem 10rem rgba(0, 30, 70, .06);
+      overflow: hidden;
+      transition: 200ms;
+
+      &:hover {
+        transform: translateY(-3rem);
+        box-shadow: 0 12rem 28rem rgba(0, 30, 70, .14);
+      }
+
+      .nome {
+        position: absolute;
+        top: 20rem;
+        left: 20rem;
+        color: var(--azulEscuro);
+        font-size: 22rem;
+        font-weight: 700;
+      }
+
+      .placa {
+        position: absolute;
+        top: 16rem;
+        left: 250rem;
+        background-color: var(--azulEscuro);
+        color: var(--branco);
+        padding: 7rem 12rem;
+        border-radius: 5rem;
+        font-size: 12rem;
+        font-weight: 600;
+      }
+
+      .info {
+        box-sizing: border-box;
+        position: absolute;
+        left: 12rem;
+        top: 54rem;
+        bottom: 12rem;
+        width: 228rem;
+        padding: 12rem 14rem;
+        background-color: color-mix(in srgb, var(--azul) 10%, var(--branco));
+        border-radius: 10rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .item {
+          display: flex;
+          flex-direction: column;
+
+          small {
+            color: var(--cinza);
+            font-size: 12rem;
+            font-weight: 400;
+          }
+
+          strong {
+            color: var(--azul);
+            font-size: 14rem;
+            font-weight: 700;
+          }
+        }
+
+        .item.frete {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+
+          small {
+            color: var(--azul);
+            font-weight: 600;
+          }
+
+          strong {
+            color: var(--laranja);
+          }
+        }
+
+        .divisor {
+          height: 1rem;
+          background-color: color-mix(in srgb, var(--azul) 25%, transparent);
+        }
+      }
+
+      .img-veiculo {
+        position: absolute;
+        right: -50rem;
+        bottom: 0;
+        width: 62%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center bottom;
+        pointer-events: none;
+        
+        img {
+          width: auto;
+          height: 700px;
+          object-fit: cover;
+          object-position: left;
+          position: absolute;
+          left: 0%;
+          top: -160px;
+      
+         
+        }
+      }
+
+
+    }
+  }
+
+  .sem-resultado {
+    margin-top: 30rem;
+    text-align: center;
+    color: var(--cinza);
+    font-size: 18rem;
+  }
+}
+
+.chatbot {
+  position: fixed;
+  right: 34rem;
+  bottom: 30rem;
+  width: 72rem;
+  height: 72rem;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--branco);
+  box-shadow: 0 6rem 18rem rgba(0, 0, 0, .18);
+  color: var(--azul);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 200ms;
+
+  i {
+    font-size: 32rem;
+  }
+
+  &:hover {
+    transform: translateY(-3rem);
+  }
+}
+
+main .main-posLogin .topo {
+  .titulo {
+    font-size: 32rem;
+  }
+
+  .user {
+    gap: 24rem;
+
+    .userButton {
+      width: 50rem;
+      height: 50rem;
+      background-color: color-mix(in srgb, var(--cinza) 35%, var(--branco));
+      color: var(--azulEscuro);
+      text-decoration: none;
+
+      i {
+        font-size: 24rem;
+      }
+    }
+
+    .buttonSair {
+      width: 130rem;
+      height: 34rem;
+      font-size: 16rem;
+    }
+  }
+}
+
+@media (max-width: 1300px) {
+  .sidebar {
+    width: 280rem;
+
+    .links {
+      gap: 24rem;
+
+      .link {
+        font-size: 22rem;
+        height: 52rem;
+
+        i {
+          font-size: 24rem;
+        }
+      }
+    }
+  }
+
+  .conteudo-veiculos .lista-veiculos {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  main {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 16rem;
+    padding: 12rem 16rem;
+    background-color: var(--fundo);
+    z-index: 20;
+
+    .logo {
+      flex: 0 0 auto;
+      width: 70rem;
+    }
+
+    .links {
+      flex: 1;
+      flex-direction: row;
+      gap: 8rem;
+      margin-top: 0;
+      overflow-x: auto;
+
+      .link {
+        flex: 0 0 auto;
+        height: 44rem;
+        padding-inline: 14rem;
+        font-size: 16rem;
+        border-radius: 20rem;
+
+        i {
+          font-size: 18rem;
+        }
+      }
+    }
+  }
+
+  main .main-posLogin {
+    padding-inline: 16rem;
+    padding-top: 16rem;
+
+    .topo {
+      align-items: center;
+      gap: 12rem;
+
+      .titulo {
+        font-size: 30rem;
+      }
+
+      .user {
+        gap: 16rem;
+
+        .userButton {
+          width: 48rem;
+          height: 48rem;
+
+          i {
+            font-size: 24rem;
+          }
+        }
+
+        .buttonSair {
+          width: 100rem;
+          height: 36rem;
+          font-size: 16rem;
+        }
+      }
+    }
+  }
+
+  .conteudo-veiculos {
+    margin-top: 24rem;
+    padding-right: 0;
+
+    .filtros {
+      .busca {
+        padding: 16rem;
+
+        i {
+          left: 32rem;
+        }
+
+        input {
+          width: 100%;
+        }
+      }
+
+      .filtros-corpo {
+        padding: 14rem 16rem 20rem;
+
+        .selects {
+          gap: 14rem;
+        }
+
+        .campo {
+          flex: 1 1 160rem;
+
+          select {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+
+  .chatbot {
+    width: 56rem;
+    height: 56rem;
+    right: 16rem;
+    bottom: 16rem;
+
+    i {
+      font-size: 26rem;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .conteudo-veiculos {
+
+    .quantidade,
+    .quantidade span {
+      font-size: 17rem;
+    }
+
+    .filtros .filtros-corpo {
+      .campo {
+        flex: 1 1 100%;
+      }
+
+      .acoes {
+        justify-content: space-between;
+      }
+    }
+
+    .lista-veiculos {
+      gap: 18rem;
+
+      .card-veiculo {
+        height: auto;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12rem;
+        padding: 16rem;
+
+        .nome,
+        .placa,
+        .info,
+        .imagem {
+          position: static;
+        }
+
+        .nome {
+          font-size: 19rem;
+        }
+
+        .info {
+          width: 100%;
+          gap: 10rem;
+        }
+
+        .imagem {
+          width: 100%;
+          height: 170rem;
+          object-fit: contain;
+          object-position: center;
+        }
+      }
+    }
+  }
+}

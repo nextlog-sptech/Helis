@@ -1,6 +1,6 @@
 setarTema(false)
 sidebar.innerHTML = `
- <a class="logo" href="dashboard.html"><img src="assets/icon/logo.svg" alt=""></a>
+ <a class="logo" href="dashboard.html"><img src="assets/icon/logo.png" alt=""></a>
             <div class="links">
                 <a href="dashboard.html" id="linkDash" class="link">
                     <i class="fa-solid fa-house"></i> Dasboard
@@ -11,23 +11,24 @@ sidebar.innerHTML = `
                 <a href="veiculos.html" id="linkVeiculo" class="link">
                     <i class="fa-solid fa-truck"></i> Veículos
                 </a>
+                   <a href="comercial.html" id="linkFinancas" class="link">
+                    <i class="fa-solid fa-wallet"></i> Comercial
+                </a>
                 <a href="motoristas.html"  id="linkMoto"class="link">
-                    <i class="fa-solid fa-user"></i> Motoristas
+                    <i class="fa-solid fa-user"></i> Funcionários
                 </a>
-                <a href="financas.html" id="linkFinancas" class="link">
-                    <i class="fa-solid fa-wallet"></i> Finanças
-                </a>
+             
             </div>
 `;
 
 userNav.innerHTML = `
  <button onclick="setarTema(true)" href="" class="userButton temaButton"> <i class="fa-regular   fa-sun"></i></button>
-<a href="" class="userButton"><img src="https://st.depositphotos.com/1779253/5140/v/450/depositphotos_51405259-stock-illustration-male-avatar-profile-picture-use.jpg" alt=""></a>
-                    <a href="" class="buttonSair">Sair</a>`;
+
+                    <a href="" class="buttonSair" onclick="sessionStorage.clear()">Sair</a>`;
 
 const paginaAtual = window.location.pathname.split("/").pop();
 
-// Todos os links
+
 const links = sidebar.querySelectorAll(".link");
 
 links.forEach((link) => {
@@ -75,4 +76,12 @@ function setarTema(button) {
             document.getElementById("transicaoTema")?.remove();
         }, 400);
     }
+}
+
+// Carrega automaticamente o componente flutuante do BobIA nas telas com sidebar
+if (!document.getElementById("script-bobia-component")) {
+    const scriptBobia = document.createElement("script");
+    scriptBobia.id = "script-bobia-component";
+    scriptBobia.src = "js/componentes/bobia.js";
+    document.body.appendChild(scriptBobia);
 }

@@ -1,16 +1,27 @@
 
- /* Por favor usem as variaveis para facilitar a configuração do modo escuro  */
- /* Usem tbm o 'rem' inves do px, nas letras para facilitar a resposividade */
- 
- /*
- Exemplo de como usar as variaveis de cor e o rem
- .componente{
-    font-size: 30rem;
-    background-color:var(--F6F6F6);
-    color:var(--laranja);
-    border-color:var(--azul);
- } 
-As variaveis estão declaradas no arquivo global.css
-Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
-    
- */
+/* Cores e estrutura principal reaproveitadas do global.css. */
+.conteudo { color: var(--texto); padding-bottom: 30px; }
+.filtros, .lista, .formulario { background: var(--branco); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+.filtros-corpo, .selects, .acoes { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; }
+.filtros-corpo { justify-content: space-between; }
+.campo { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 160px; }
+.busca { margin-bottom: 20px; }
+input, select { box-sizing: border-box; width: 100%; padding: 12px; border: 1px solid var(--cinza2); border-radius: 6px; background: var(--fundo); color: var(--texto); font: inherit; }
+button { cursor: pointer; font: inherit; padding: 11px 18px; border-radius: 6px; border: 1px solid var(--azul); }
+.btn-filtrar { background: var(--azul); color: white; }
+.btn-limpar { background: transparent; color: var(--azul); }
+button:hover { opacity: .85; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--laranja); outline-offset: 3px; }
+.quantidade { margin: 20px 0; }
+.lista { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; text-align: left; }
+th, td { padding: 16px 12px; border-bottom: 1px solid var(--cinza2); white-space: nowrap; }
+th { color: var(--azulEscuro); font-weight: 600; }
+td small { display: block; margin-top: 6px; color: var(--cinza); font-size: 13rem; }
+h2 { color: var(--azulEscuro); font-size: 24rem; margin-bottom: 20px; }
+.formulario .selects { margin-bottom: 20px; }
+.formulario p { margin: 12px 0; line-height: 1.7; }
+.sem-resultado { padding: 20px 0; }
+.main-posLogin { min-width: 0; }
+@media(max-width: 1100px) { .sidebar { width: 230px; flex-shrink: 0; } .sidebar .links .link { font-size: 18rem; } }
+@media(max-width: 700px) { main { flex-direction: column; } .sidebar { width: 100%; height: auto; position: static; } .sidebar .links { flex-direction: row; flex-wrap: wrap; gap: 6px; margin-top: 12px; } .sidebar .links .link { height: 40px; font-size: 14rem; padding-inline: 10px; } .sidebar .links .link i { font-size: 16px; } main .main-posLogin .topo .titulo { font-size: 28rem; } main .main-posLogin .topo .user { gap: 6px; } main .main-posLogin .topo .user .userButton { width: 32px; height: 32px; } main .main-posLogin .topo .user .buttonSair { width: 65px; font-size: 16rem; } .filtros, .lista, .formulario { padding: 16px; } }

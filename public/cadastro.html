@@ -51,7 +51,7 @@
     
     <div class="card-cadastro">
 
-    <form id="formCadastro">
+    <form id="formCadastro" onsubmit="return false;">
 
     <div id="conteudo-informacoes">
     <div class="card-cabecalho">
@@ -74,7 +74,8 @@
 
       <h4>CNPJ *</h4>
         
-      <input type="text" id="input_cnpj" placeholder="00.000.000/0000-00">
+      <input type="text" id="input_cnpj" placeholder="00000000000000" inputmode="numeric" pattern="[0-9]*" maxlength="14" aria-describedby="mensagem-input_cnpj">
+      <span id="mensagem-input_cnpj" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
 
     </div>
 
@@ -82,7 +83,8 @@
         
        <h4>Razão Social *</h4>
         
-        <input type="text" id="input_razao" placeholder="Insira a razão social da empresa">
+        <input type="text" id="input_razao" placeholder="Insira a razão social da empresa" aria-describedby="mensagem-input_razao">
+        <span id="mensagem-input_razao" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
 
       </div>
 
@@ -90,7 +92,8 @@
 
         <h4>Nome Fantasia *</h4>
         
-        <input type="text" id="input_nomefantasia" placeholder="Insira o nome fantasia da empresa">
+        <input type="text" id="input_nomefantasia" placeholder="Insira o nome fantasia da empresa" aria-describedby="mensagem-input_nomefantasia">
+        <span id="mensagem-input_nomefantasia" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
 
       </div>
 
@@ -98,7 +101,8 @@
 
         <h4>E-mail *</h4>
         
-        <input type="text" id="input_email" placeholder="email@email.com">
+        <input type="text" id="input_email" placeholder="email@email.com" aria-describedby="mensagem-input_email">
+        <span id="mensagem-input_email" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
 
       </div>
 
@@ -106,7 +110,8 @@
 
        <h4>Senha *</h4>
         
-        <input type="password" id="input_senha" placeholder="senha">
+        <input type="password" id="input_senha" placeholder="Senha" minlength="6" autocomplete="new-password" aria-describedby="mensagem-input_senha">
+        <span id="mensagem-input_senha" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
 
       </div>
 
@@ -114,14 +119,16 @@
 
         <h4>Telefone *</h4>
         
-        <input type="text" id="input_telefone" placeholder="(00) 00000-0000">
+        <input type="text" id="input_telefone" placeholder="00000000000" inputmode="numeric" pattern="[0-9]*" maxlength="11" aria-describedby="mensagem-input_telefone">
+        <span id="mensagem-input_telefone" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
 
       </div>
 
     </div>
 
     <div class="botoes">
-      <button type="button" class="botao-avancar"onclick="avancar()">Avançar</button>
+      <div id="mensagem-validacao-empresa" class="mensagem-validacao hidden" role="alert" aria-live="assertive"></div>
+      <button type="button" class="botao-avancar" onclick="avancar()">Avançar</button>
     </div>
     </div>
    
@@ -143,36 +150,42 @@
 
       <div class="campo">
         <h4>CEP</h4>
-        <input type="text" id="input_cep" placeholder="00000-00">
+        <input type="text" id="input_cep" placeholder="00000-000" aria-describedby="mensagem-input_cep">
+        <span id="mensagem-input_cep" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
       </div>
 
       <div class="campo">
         <h4>Logradouro</h4>
-        <input type="text" id="input_logradouro" placeholder="Insira o logradouro da empresa">
+        <input type="text" id="input_logradouro" placeholder="Insira o logradouro da empresa" aria-describedby="mensagem-input_logradouro">
+        <span id="mensagem-input_logradouro" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
       </div>
 
       <div class="campo">
         <h4>Número</h4>
-        <input type="text" id="input_numero"placeholder="000">
+        <input type="text" id="input_numero"placeholder="000" aria-describedby="mensagem-input_numero">
+        <span id="mensagem-input_numero" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
       </div>
 
       <div class="campo">
         <h4>Complemento (opcional)</h4>
-        <input type="text" id="input_complemento" placeholder="000">
+        <input type="text" id="input_complemento" placeholder="Sede">
       </div>
 
       <div class="campo">
         <h4>Bairro</h4>
-        <input type="text" id="input_bairro" placeholder="Insira o bairro da empresa">
+        <input type="text" id="input_bairro" placeholder="Insira o bairro da empresa" aria-describedby="mensagem-input_bairro">
+        <span id="mensagem-input_bairro" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
       </div>
 
       <div class="campo">
         <h4>Cidade</h4>
-        <input type="text" id="input_cidade" placeholder="Insira cidade da empresa">
+        <input type="text" id="input_cidade" placeholder="Insira cidade da empresa" aria-describedby="mensagem-input_cidade">
+        <span id="mensagem-input_cidade" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
       </div>
       </div>
 
     <div class="botoes">
+      <div id="mensagem-validacao-endereco" class="mensagem-validacao hidden" role="alert" aria-live="assertive"></div>
       <button type="button" class="botao-volta" onclick="voltar()">Voltar</button>
     
       <button type="button" class="botao-avancar" onclick="avancar2()">Avançar</button>
@@ -198,37 +211,44 @@
 
       <div class="campo">
         <h4>CPF</h4>
-        <input type="text" id="input_cpf" placeholder="00000-00">
+        <input type="text" id="input_cpf" placeholder="123.456.789-00" aria-describedby="mensagem-input_cpf">
+        <span id="mensagem-input_cpf" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
       </div>
 
       <div class="campo">
         <h4>Nome</h4>
-        <input type="text" id="input_nomeresponsavel" placeholder="Insira nome do responsável ">
+        <input type="text" id="input_nomeresponsavel" placeholder="Insira nome do responsável " aria-describedby="mensagem-input_nomeresponsavel">
+        <span id="mensagem-input_nomeresponsavel" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
       </div>
 
       <div class="campo">
         <h4>E-mail</h4>
-        <input type="text" id="input_emailresponsavel" placeholder="email@email.com">
+        <input type="text" id="input_emailresponsavel" placeholder="email@email.com" aria-describedby="mensagem-input_emailresponsavel">
+        <span id="mensagem-input_emailresponsavel" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
       </div>
 
        <div class="campo">
         <h4>Telefone</h4>
-        <input type="text" id="input_telefoneresponsavel" placeholder="(00) 00000-0000">
+        <input type="text" id="input_telefoneresponsavel" placeholder="00000000000" inputmode="numeric" pattern="[0-9]*" maxlength="11" aria-describedby="mensagem-input_telefoneresponsavel">
+        <span id="mensagem-input_telefoneresponsavel" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
       </div>
 
        <div class="campo">
         <h4>Cargo</h4>
-        <input type="text" id="input_cargo" placeholder="Insira cargo do responsável">
+        <input type="text" id="input_cargo" placeholder="Insira cargo do responsável" aria-describedby="mensagem-input_cargo">
+        <span id="mensagem-input_cargo" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
       </div>
 
        <div class="campo">
         <h4>Senha</h4>
-        <input type="text" id="input_senharesponsavel" placeholder="senha">
+        <input type="password" id="input_senharesponsavel" placeholder="Senha" minlength="6" autocomplete="new-password" aria-describedby="mensagem-input_senharesponsavel">
+        <span id="mensagem-input_senharesponsavel" class="mensagem-validacao-campo hidden" role="alert" aria-live="assertive"></span>
       </div>
       </div>
       
 
       <div class="botoes">
+      <div id="mensagem-validacao-responsavel" class="mensagem-validacao hidden" role="alert" aria-live="assertive"></div>
       <button type="button" class="botao-volta" onclick="voltar2()">Voltar</button>
 
       <button type="button" class="botao-avancar" onclick="finalizar()">Finalizar</button>
@@ -241,6 +261,6 @@
 </body>
 <script src="js/componentes/navbar.js"></script>
 <script src="js/session.js"></script>
-<script src="js/cadastro.js"></script>
+<script src="js/cadastro.js?v=3.0"></script>
 
 </html>
