@@ -1,35 +1,10 @@
 <!DOCTYPE html>
-<html lang="PT-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="assets/icon/logo.svg" type="image/x-icon">
-    <title>Home</title>
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/motoristas.css">
-</head>
-<!-- Cada página possui seu próprio arquivo JS e CSS. Dê preferência ao uso dos arquivos existentes e, caso seja necessário, crie novos arquivos. -->
-
-<body>
-
-    <main>
-        <div class="sidebar" id="sidebar"></div>
-        <div class="main-posLogin">
-            <div class="topo">
-                <div class="titulo">
-                    Motoristas
-                </div>
-                <div class="user" id="userNav"></div>
-            </div>
-            <div class="conteudo">
-                Coloque o conteudo da pagina aqui
-            </div>
-        </div>
-    </main>
-</body>
-<script src="js/componentes/sidebar.js"></script>
-<script src="js/session.js"></script>
-<script src="js/motoristas.js"></script>
-
-</html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NextLog | Funcionários</title><link rel="shortcut icon" href="assets/icon/icon.png"><link rel="stylesheet" href="css/global.css"><link rel="stylesheet" href="css/funcionarios.css"></head>
+<body><main><div class="sidebar" id="sidebar"></div><div class="main-posLogin"><div class="topo"><h1 class="titulo">Funcionários</h1><div class="user" id="userNav"></div></div><div class="conteudo">
+<p>Visualização com dados de exemplo. As alterações desta tela não são gravadas no banco.</p>
+<form class="filtros" id="form-filtros"><div class="busca"><label class="campo">Buscar funcionário<input id="busca" placeholder="Nome ou e-mail"></label></div><div class="filtros-corpo"><label class="campo">Cargo<select id="cargo"><option value="">Todos</option><option>Administrador</option><option>Gestor de Logística</option><option>Analista de Logística</option><option>Motorista</option></select></label><div class="acoes"><button class="btn-filtrar">Filtrar</button><button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar filtros</button><button type="button" class="btn-filtrar" onclick="abrirFormulario(-1)">Novo funcionário</button></div></div></form>
+<p class="quantidade">Quantidade: <span id="quantidade">0</span></p><div class="lista"><table><thead><tr><th>Nome</th><th>Cargo</th><th>E-mail</th><th>Telefone</th><th>Ação</th></tr></thead><tbody id="lista"></tbody></table><p id="sem-resultado" class="sem-resultado" hidden>Nenhum funcionário encontrado.</p></div>
+<form class="formulario" id="form-funcionario" hidden><h2 id="titulo-formulario">Novo funcionário</h2><div class="selects"><label class="campo">Nome<input id="nome" required maxlength="45"></label><label class="campo">E-mail<input type="email" id="email" required maxlength="60"></label></div><div class="selects"><label class="campo">Telefone (DDD + número)<input type="tel" id="telefone" required pattern="[0-9]{10,11}" maxlength="11" placeholder="11999999999"></label><label class="campo">Cargo<select id="cargo-funcionario"><option>Administrador</option><option>Gestor de Logística</option><option>Analista de Logística</option><option>Motorista</option></select></label></div><p id="erro-formulario" role="alert"></p><div class="acoes"><button class="btn-filtrar">Salvar exemplo</button><button type="button" class="btn-limpar" onclick="fecharFormulario()">Cancelar</button></div></form><p id="mensagem" role="status"></p>
+</div></div></main><script src="js/componentes/sidebar.js"></script><script src="js/session.js"></script><script src="js/funcionarios.js"></script></body></html>

@@ -1,4 +1,3 @@
-
 /* Cores e estrutura principal reaproveitadas do global.css. */
 .conteudo { color: var(--texto); padding-bottom: 30px; }
 .filtros, .lista, .formulario { background: var(--branco); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
