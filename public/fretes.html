@@ -1,35 +1,13 @@
 <!DOCTYPE html>
-<html lang="PT-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="assets/icon/logo.svg" type="image/x-icon">
-    <title>Home</title>
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/frete.css">
-</head>
-<!-- Cada página possui seu próprio arquivo JS e CSS. Dê preferência ao uso dos arquivos existentes e, caso seja necessário, crie novos arquivos. -->
-
-<body>
-
-    <main>
-        <div class="sidebar" id="sidebar"></div>
-        <div class="main-posLogin">
-            <div class="topo">
-                <div class="titulo">
-                    Fretes
-                </div>
-                <div class="user" id="userNav"></div>
-            </div>
-            <div class="conteudo">
-                Coloque o conteudo da pagina aqui
-            </div>
-        </div>
-    </main>
-</body>
-<script src="js/componentes/sidebar.js"></script>
-<script src="js/session.js"></script>
-<script src="js/fretes.js"></script>
-
-</html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NextLog | Fretes</title><link rel="shortcut icon" href="assets/icon/icon.png"><link rel="stylesheet" href="css/global.css"><link rel="stylesheet" href="css/frete.css"></head>
+<body><main><div class="sidebar" id="sidebar"></div><div class="main-posLogin"><div class="topo"><h1 class="titulo">Fretes</h1><div class="user" id="userNav"></div></div><div class="conteudo">
+<p>Visualização com dados de exemplo. As alterações desta tela não são gravadas no banco.</p>
+<form class="filtros" id="form-filtros">
+<div class="busca"><label class="campo">Buscar frete<input id="busca" placeholder="Código, documento fiscal, origem ou destino"></label></div>
+<div class="filtros-corpo"><div class="selects"><label class="campo">Status<select id="status"><option value="">Todos</option><option>Aguardando</option><option>Em transporte</option><option>Entregue</option><option>Cancelado</option></select></label><label class="campo">Saída a partir de<input type="date" id="inicio"></label><label class="campo">Saída até<input type="date" id="fim"></label></div><div class="acoes"><button class="btn-filtrar">Filtrar</button><button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar filtros</button></div></div><p id="erro" role="alert"></p></form>
+<p class="quantidade">Quantidade: <span id="quantidade">0</span></p>
+<div class="lista"><table><thead><tr><th>Frete</th><th>Origem / destino</th><th>Responsável / veículo</th><th>Valor</th><th>Previsão</th><th>Status</th><th>Ação</th></tr></thead><tbody id="lista"></tbody></table><p class="sem-resultado" id="sem-resultado" hidden>Nenhum frete encontrado.</p></div>
+<section class="formulario" id="detalhes" hidden tabindex="-1"><h2>Detalhes do frete</h2><div id="informacoes"></div><button class="btn-limpar" onclick="fecharDetalhes()">Fechar detalhes</button></section>
+</div></div></main><script src="js/componentes/sidebar.js"></script><script src="js/session.js"></script><script src="js/fretes.js"></script></body></html>
