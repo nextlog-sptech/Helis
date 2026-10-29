@@ -3,7 +3,7 @@ sidebar.innerHTML = `
  <a class="logo" href="dashboard.html"><img src="assets/icon/logo.png" alt=""></a>
             <div class="links">
                 <a href="dashboard.html" id="linkDash" class="link">
-                    <i class="fa-solid fa-house"></i> Dasboard
+                    <i class="fa-solid fa-house"></i> Dashboard
                 </a>
                 <a href="fretes.html" id="linkFrete" class="link">
                     <i class="fa-solid fa-box"></i> Fretes
