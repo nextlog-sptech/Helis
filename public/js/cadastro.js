@@ -234,6 +234,7 @@ function voltar2() {
     barras(2);
 }
 
+
 function finalizar() {
     var cpf = document.getElementById("input_cpf").value.trim();
     var nome = document.getElementById("input_nomeresponsavel").value.trim();
@@ -242,7 +243,15 @@ function finalizar() {
     var cargo = document.getElementById("input_cargo").value.trim();
     var senha = document.getElementById("input_senharesponsavel").value;
 
-    limparErros(["input_cpf", "input_nomeresponsavel", "input_emailresponsavel", "input_telefoneresponsavel", "input_cargo", "input_senharesponsavel"]);
+    limparErros([
+        "input_cpf",
+        "input_nomeresponsavel",
+        "input_emailresponsavel",
+        "input_telefoneresponsavel",
+        "input_cargo",
+        "input_senharesponsavel"
+    ]);
+
     mostrarMensagem("");
 
     if (!validarCamposObrigatorios([
@@ -257,32 +266,92 @@ function finalizar() {
     }
 
     var cpfLimpo = cpf.replace(/\D/g, '');
+
     if (cpfLimpo.length != 11) {
-        mostrarErroCampo("input_cpf", "O CPF do responsável deve conter exatamente 11 dígitos numéricos.");
+        mostrarErroCampo("input_cpf", "O CPF deve conter 11 dígitos numéricos.");
         return false;
     }
 
     if (!email.includes("@") || !email.includes(".")) {
-        mostrarErroCampo("input_emailresponsavel", "Insira um e-mail válido para o responsável (ex: nome@dominio.com).");
+        mostrarErroCampo("input_emailresponsavel", "Insira um e-mail válido.");
         return false;
     }
 
-    if (!/^[0-9]{10,11}$/.test(telefone)) {
-        mostrarErroCampo("input_telefoneresponsavel", "O telefone do responsável deve conter apenas números: 10 ou 11 dígitos com DDD.");
+    var telefoneLimpo = telefone.replace(/\D/g, '');
+
+    if (telefoneLimpo.length != 10 && telefoneLimpo.length != 11) {
+        mostrarErroCampo("input_telefoneresponsavel", "Informe DDD + telefone.");
         return false;
     }
 
     if (!senhaValida(senha)) {
-        mostrarErroCampo("input_senharesponsavel", "A senha do responsável deve ter ao menos 6 caracteres, incluindo letras maiúsculas e minúsculas, um número e um caractere especial.");
+        mostrarErroCampo(
+            "input_senharesponsavel",
+            "A senha deve ter 6 caracteres, maiúscula, minúscula, número e caractere especial."
+        );
         return false;
     }
 
-    mostrarMensagem("Cadastro realizado com sucesso!", "sucesso");
-    setTimeout(function () {
-        window.location.href = "login.html";
-    }, 1200);
+    // Reunir os dados das três etapas
+    var dadosCadastro = {
+        cnpjServer: document.getElementById("input_cnpj").value,
+        razaoServer: document.getElementById("input_razao").value.trim(),
+        nomeFantasiaServer: document.getElementById("input_nomefantasia").value.trim(),
+        emailEmpresaServer: document.getElementById("input_email").value.trim(),
+        senhaEmpresaServer: document.getElementById("input_senha").value,
+        telefoneEmpresaServer: document.getElementById("input_telefone").value,
+
+        cepServer: document.getElementById("input_cep").value,
+        logradouroServer: document.getElementById("input_logradouro").value.trim(),
+        numeroServer: document.getElementById("input_numero").value.trim(),
+        complementoServer: document.getElementById("input_complemento")
+            ? document.getElementById("input_complemento").value.trim()
+            : "",
+        bairroServer: document.getElementById("input_bairro").value.trim(),
+        cidadeServer: document.getElementById("input_cidade").value.trim(),
+
+        cpfServer: cpfLimpo,
+        nomeResponsavelServer: nome,
+        emailResponsavelServer: email,
+        telefoneResponsavelServer: telefoneLimpo,
+        cargoServer: cargo,
+        senhaResponsavelServer: senha
+    };
+
+    // Enviar o cadastro para o backend
+    fetch("/usuarios/cadastrar", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dadosCadastro)
+    })
+    .then(function (resposta) {
+        if (!resposta.ok) {
+            return resposta.text().then(function (mensagem) {
+                throw new Error(mensagem || "Erro ao realizar cadastro.");
+            });
+        }
+
+        return resposta.json();
+    })
+    .then(function (resultado) {
+        console.log("Cadastro realizado:", resultado);
+
+        mostrarMensagem("Cadastro realizado com sucesso!", "sucesso");
+
+        setTimeout(function () {
+            window.location.href = "login.html";
+        }, 1200);
+    })
+    .catch(function (erro) {
+        console.error("Erro no cadastro:", erro);
+        mostrarMensagem(erro.message || "Não foi possível realizar o cadastro.", "erro");
+    });
+
     return false;
 }
+
 
 var camposCadastro = document.querySelectorAll(".campo input");
 for (var i = 0; i < camposCadastro.length; i++) {
