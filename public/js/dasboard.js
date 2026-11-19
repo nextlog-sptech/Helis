@@ -10,9 +10,21 @@ Chart.defaults.font.family = "'Inter', sans-serif";
 Chart.defaults.font.size = 11;
 Chart.defaults.color = '#7b8194';
 
+// ===== Empresa do usuário logado =====
+const empresaId = sessionStorage.EMPRESA_ID;
+
+const nomesEstados = {
+    AC: 'Acre', AL: 'Alagoas', AP: 'Amapá', AM: 'Amazonas', BA: 'Bahia', CE: 'Ceará',
+    DF: 'Distrito Federal', ES: 'Espírito Santo', GO: 'Goiás', MA: 'Maranhão',
+    MT: 'Mato Grosso', MS: 'Mato Grosso do Sul', MG: 'Minas Gerais', PA: 'Pará',
+    PB: 'Paraíba', PR: 'Paraná', PE: 'Pernambuco', PI: 'Piauí', RJ: 'Rio de Janeiro',
+    RN: 'Rio Grande do Norte', RS: 'Rio Grande do Sul', RO: 'Rondônia', RR: 'Roraima',
+    SC: 'Santa Catarina', SP: 'São Paulo', SE: 'Sergipe', TO: 'Tocantins'
+};
+
+const nomesMeses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
 // ===== Gráfico de barras: Fretes por estado =====
-const estados = ['São Paulo', 'Rio de Janeiro', 'Minas Gerais', 'Bahia'];
-const fretesEstados = [156, 89, 42, 23];
 
 // escreve o valor em cima de cada barra, como no Figma
 const valoresNasBarras = {
@@ -33,43 +45,74 @@ const valoresNasBarras = {
     }
 };
 
-new Chart(document.getElementById('fretesChart'), {
-    type: 'bar',
-    data: {
-        labels: estados,
-        datasets: [{
-            label: 'Fretes',
-            data: fretesEstados,
-            backgroundColor: [corAzul, corAzul, corLaranja, corLaranja],
-            borderRadius: 6
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { display: false }
+function plotarFretesPorEstado(dados) {
+    const estados = dados.map(function (linha) {
+        return nomesEstados[linha.uf] || linha.uf;
+    });
+    const fretesEstados = dados.map(function (linha) {
+        return Number(linha.qtdFretes);
+    });
+    // os dois estados com mais fretes ficam em azul e os demais em laranja
+    const cores = fretesEstados.map(function (valor, i) {
+        return i < 2 ? corAzul : corLaranja;
+    });
+
+    new Chart(document.getElementById('fretesChart'), {
+        type: 'bar',
+        data: {
+            labels: estados,
+            datasets: [{
+                label: 'Fretes',
+                data: fretesEstados,
+                backgroundColor: cores,
+                borderRadius: 6
+            }]
         },
-        datasets: {
-            bar: {
-                barPercentage: 0.5,
-                categoryPercentage: 0.6
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 200,
-                ticks: { stepSize: 50 },
-                border: { display: false }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: { top: 20 } // espaço para o valor escrito em cima da barra
             },
-            x: {
-                grid: { display: false }
+            plugins: {
+                legend: { display: false }
+            },
+            datasets: {
+                bar: {
+                    barPercentage: 0.5,
+                    categoryPercentage: 0.6
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 },
+                    border: { display: false }
+                },
+                x: {
+                    grid: { display: false }
+                }
             }
-        }
-    },
-    plugins: [valoresNasBarras]
-});
+        },
+        plugins: [valoresNasBarras]
+    });
+}
+
+function buscarFretesPorEstado() {
+    fetch(`/dashboard/fretes-estado/${empresaId}`)
+        .then(function (resposta) {
+            if (!resposta.ok) {
+                throw new Error('Erro ao buscar fretes por estado: ' + resposta.status);
+            }
+            return resposta.json();
+        })
+        .then(function (dados) {
+            plotarFretesPorEstado(dados);
+        })
+        .catch(function (erro) {
+            console.error(erro);
+        });
+}
 
 // ===== Gráfico de rosca: Tipos de Baú =====
 new Chart(document.getElementById('graficoRosca'), {
@@ -156,45 +199,82 @@ new Chart(document.getElementById('graficoRegiao'), {
 });
 
 // ===== Gráfico de linha: Fretes por período =====
-new Chart(document.getElementById('periodoChart'), {
-    type: 'line',
-    data: {
-        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
-        datasets: [{
-            label: 'Fretes',
-            data: [120, 185, 150, 210, 175, 240, 195],
-            borderColor: corLaranja,
-            backgroundColor: 'rgba(255, 120, 0, 0.12)', // área clara abaixo da linha
-            fill: true,
-            tension: 0, // linhas retas, como no Figma
-            borderWidth: 2,
-            pointRadius: 3,
-            pointBorderWidth: 2,
-            pointBackgroundColor: '#fff', // bolinha vazada
-            pointBorderColor: corLaranja
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { display: false }
+const QTD_MESES_PERIODO = 7;
+
+function plotarFretesPorPeriodo(dados) {
+    // o banco só devolve os meses que tiveram frete, então os meses vazios entram com 0
+    const labels = [];
+    const valores = [];
+    const hoje = new Date();
+
+    for (let i = QTD_MESES_PERIODO - 1; i >= 0; i--) {
+        const data = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+        const chave = data.getFullYear() + '-' + String(data.getMonth() + 1).padStart(2, '0');
+        const encontrado = dados.find(function (linha) {
+            return linha.mes === chave;
+        });
+
+        labels.push(nomesMeses[data.getMonth()]);
+        valores.push(encontrado ? Number(encontrado.qtdFretes) : 0);
+    }
+
+    new Chart(document.getElementById('periodoChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Fretes',
+                data: valores,
+                borderColor: corLaranja,
+                backgroundColor: 'rgba(255, 120, 0, 0.12)', // área clara abaixo da linha
+                fill: true,
+                tension: 0, // linhas retas, como no Figma
+                borderWidth: 2,
+                pointRadius: 3,
+                pointBorderWidth: 2,
+                pointBackgroundColor: '#fff', // bolinha vazada
+                pointBorderColor: corLaranja
+            }]
         },
-        scales: {
-            y: {
-                min: 80,
-                max: 250,
-                // mostra só 100, 150, 200 e 250, mas o eixo começa em 80
-                afterBuildTicks: function (scale) {
-                    scale.ticks = [100, 150, 200, 250].map(function (value) {
-                        return { value: value };
-                    });
-                },
-                border: { display: false }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
             },
-            x: {
-                grid: { display: false }
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0, maxTicksLimit: 5 },
+                    border: { display: false }
+                },
+                x: {
+                    grid: { display: false }
+                }
             }
         }
-    }
-});
+    });
+}
+
+function buscarFretesPorPeriodo() {
+    fetch(`/dashboard/fretes-periodo/${empresaId}?meses=${QTD_MESES_PERIODO}`)
+        .then(function (resposta) {
+            if (!resposta.ok) {
+                throw new Error('Erro ao buscar fretes por período: ' + resposta.status);
+            }
+            return resposta.json();
+        })
+        .then(function (dados) {
+            plotarFretesPorPeriodo(dados);
+        })
+        .catch(function (erro) {
+            console.error(erro);
+        });
+}
+
+if (empresaId) {
+    buscarFretesPorEstado();
+    buscarFretesPorPeriodo();
+} else {
+    console.error('EMPRESA_ID não encontrado na sessão. Faça login novamente.');
+}

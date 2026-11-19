@@ -65,6 +65,7 @@ create table frete(
     idEmpresa int NOT NULL,
     veiculoId int NOT NULL,
     docFiscal char(6) NOT NULL UNIQUE,
+    dataFrete date NOT NULL,
     valorFrete decimal(10,2) ,
     peso decimal(6,2),
     valorMercadoria decimal(10,2),
