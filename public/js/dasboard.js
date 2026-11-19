@@ -24,6 +24,32 @@ const nomesEstados = {
 
 const nomesMeses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
+// Faz a requisição e transforma qualquer problema em um erro com mensagem legível
+function buscarJson(url) {
+    return fetch(url)
+        .catch(function () {
+            throw new Error('Não foi possível conectar ao servidor. Verifique sua conexão.');
+        })
+        .then(function (resposta) {
+            if (!resposta.ok) {
+                return resposta.text().then(function (mensagem) {
+                    throw new Error(mensagem || 'Erro ao carregar os dados (' + resposta.status + ').');
+                });
+            }
+            return resposta.json();
+        });
+}
+
+// Troca o gráfico por uma mensagem de erro para o usuário
+function mostrarErro(idCanvas, mensagem) {
+    const canvas = document.getElementById(idCanvas);
+    const aviso = document.createElement('p');
+    aviso.className = 'mensagem-erro';
+    aviso.textContent = mensagem;
+    canvas.parentElement.insertBefore(aviso, canvas);
+    canvas.style.display = 'none';
+}
+
 // ===== Gráfico de barras: Fretes por estado =====
 
 // escreve o valor em cima de cada barra, como no Figma
@@ -99,18 +125,13 @@ function plotarFretesPorEstado(dados) {
 }
 
 function buscarFretesPorEstado() {
-    fetch(`/dashboard/fretes-estado/${empresaId}`)
-        .then(function (resposta) {
-            if (!resposta.ok) {
-                throw new Error('Erro ao buscar fretes por estado: ' + resposta.status);
-            }
-            return resposta.json();
-        })
+    buscarJson(`/dashboard/fretes-estado/${empresaId}`)
         .then(function (dados) {
             plotarFretesPorEstado(dados);
         })
         .catch(function (erro) {
             console.error(erro);
+            mostrarErro('fretesChart', erro.message);
         });
 }
 
@@ -257,18 +278,13 @@ function plotarFretesPorPeriodo(dados) {
 }
 
 function buscarFretesPorPeriodo() {
-    fetch(`/dashboard/fretes-periodo/${empresaId}?meses=${QTD_MESES_PERIODO}`)
-        .then(function (resposta) {
-            if (!resposta.ok) {
-                throw new Error('Erro ao buscar fretes por período: ' + resposta.status);
-            }
-            return resposta.json();
-        })
+    buscarJson(`/dashboard/fretes-periodo/${empresaId}?meses=${QTD_MESES_PERIODO}`)
         .then(function (dados) {
             plotarFretesPorPeriodo(dados);
         })
         .catch(function (erro) {
             console.error(erro);
+            mostrarErro('periodoChart', erro.message);
         });
 }
 

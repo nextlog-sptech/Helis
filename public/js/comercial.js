@@ -16,6 +16,11 @@ const anoAtual = new Date().getFullYear();
 const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 const faixas = ['Até 5 mil', '5-20 mil', '20-50 mil', 'Acima de 50 mil'];
 
+// Dados buscados uma única vez; os filtros só trabalham em cima deles, sem consultar o banco de novo
+let dadosFaixas = null;
+let dadosClientes = null;
+let todosVeiculos = null;
+
 // guarda os gráficos de rosca para poder recriar quando o filtro mudar
 let graficoFaixa = null;
 let graficoCliente = null;
@@ -36,17 +41,39 @@ function formatarAbreviado(valor) {
     return valor.toLocaleString('pt-BR');
 }
 
+// Faz a requisição e transforma qualquer problema em um erro com mensagem legível
 function buscarJson(url) {
-    return fetch(url).then(function (resposta) {
-        if (!resposta.ok) {
-            throw new Error('Erro ao buscar ' + url + ': ' + resposta.status);
-        }
-        return resposta.json();
-    });
+    return fetch(url)
+        .catch(function () {
+            throw new Error('Não foi possível conectar ao servidor. Verifique sua conexão.');
+        })
+        .then(function (resposta) {
+            if (!resposta.ok) {
+                return resposta.text().then(function (mensagem) {
+                    throw new Error(mensagem || 'Erro ao carregar os dados (' + resposta.status + ').');
+                });
+            }
+            return resposta.json();
+        });
+}
+
+// Troca o conteúdo de um gráfico/lista por uma mensagem de erro para o usuário
+function mostrarErro(elemento, mensagem) {
+    let aviso = elemento.parentElement.querySelector('.mensagem-erro');
+
+    if (!aviso) {
+        aviso = document.createElement('p');
+        aviso.className = 'mensagem-erro';
+        elemento.parentElement.insertBefore(aviso, elemento);
+    }
+    aviso.textContent = mensagem;
+    elemento.style.display = 'none';
 }
 
 // ===== KPIs =====
 function carregarKpis() {
+    const ids = ['kpiReceita', 'kpiRentabilidade', 'kpiDespesas', 'kpiFretes'];
+
     buscarJson(`/financas/kpis/${empresaId}`)
         .then(function (kpis) {
             document.getElementById('kpiReceita').textContent = formatarReais(kpis.receitaBruta);
@@ -56,6 +83,11 @@ function carregarKpis() {
         })
         .catch(function (erro) {
             console.error(erro);
+            ids.forEach(function (id) {
+                const kpi = document.getElementById(id);
+                kpi.textContent = '--';
+                kpi.title = erro.message;
+            });
         });
 }
 
@@ -150,6 +182,7 @@ function carregarFaturamentoMensal() {
         .then(plotarFaturamentoMensal)
         .catch(function (erro) {
             console.error(erro);
+            mostrarErro(document.getElementById('faturamentoChart'), erro.message);
         });
 }
 
@@ -208,7 +241,11 @@ function criarRosca(idCanvas, idLegenda, nomes, valores, cores, formatarTooltip)
     });
 }
 
-function plotarFaixas(dados) {
+function plotarFaixas(mes) {
+    const dadosDoMes = dadosFaixas.filter(function (linha) {
+        return Number(linha.mes) === mes;
+    });
+
     // mantém sempre a mesma ordem das faixas, ignorando as que não tiveram frete
     const nomes = [];
     const valores = [];
@@ -216,7 +253,7 @@ function plotarFaixas(dados) {
     const cores = [];
 
     faixas.forEach(function (faixa, i) {
-        const encontrado = dados.find(function (linha) {
+        const encontrado = dadosDoMes.find(function (linha) {
             return linha.faixa === faixa;
         });
         if (encontrado) {
@@ -234,11 +271,16 @@ function plotarFaixas(dados) {
     });
 }
 
-function plotarTopClientes(dados) {
-    const nomes = dados.map(function (linha) {
+function plotarTopClientes(mes) {
+    // o banco já devolve ordenado pela receita, então basta pegar os 5 primeiros do mês
+    const top5 = dadosClientes.filter(function (linha) {
+        return Number(linha.mes) === mes;
+    }).slice(0, 5);
+
+    const nomes = top5.map(function (linha) {
         return linha.nome;
     });
-    const valores = dados.map(function (linha) {
+    const valores = top5.map(function (linha) {
         return Number(linha.receita);
     });
     const cores = [corLaranja, corAmarelo, corAzulEscuro, corVerdeAgua, corAzul].slice(0, nomes.length);
@@ -249,20 +291,33 @@ function plotarTopClientes(dados) {
     graficoCliente = criarRosca('clienteChart', 'legendaCliente', nomes, valores, cores, formatarReais);
 }
 
-function carregarGraficosDoMes() {
-    const mes = document.getElementById('selectMes').value;
-    const parametros = `?ano=${anoAtual}&mes=${mes}`;
+// Filtro de mês: só redesenha com os dados que já estão carregados
+function filtrarMes() {
+    const mes = Number(document.getElementById('selectMes').value);
 
-    buscarJson(`/financas/faixa-valor/${empresaId}${parametros}`)
-        .then(plotarFaixas)
+    if (dadosFaixas) plotarFaixas(mes);
+    if (dadosClientes) plotarTopClientes(mes);
+}
+
+function carregarGraficosDoAno() {
+    buscarJson(`/financas/faixa-valor/${empresaId}?ano=${anoAtual}`)
+        .then(function (dados) {
+            dadosFaixas = dados;
+            plotarFaixas(Number(document.getElementById('selectMes').value));
+        })
         .catch(function (erro) {
             console.error(erro);
+            mostrarErro(document.getElementById('faixaChart'), erro.message);
         });
 
-    buscarJson(`/financas/top-clientes/${empresaId}${parametros}`)
-        .then(plotarTopClientes)
+    buscarJson(`/financas/receita-clientes/${empresaId}?ano=${anoAtual}`)
+        .then(function (dados) {
+            dadosClientes = dados;
+            plotarTopClientes(Number(document.getElementById('selectMes').value));
+        })
         .catch(function (erro) {
             console.error(erro);
+            mostrarErro(document.getElementById('clienteChart'), erro.message);
         });
 }
 
@@ -278,27 +333,21 @@ function preencherSelect(idSelect, valores) {
     });
 }
 
-function carregarFiltrosVeiculo() {
-    buscarJson(`/financas/filtros-veiculo/${empresaId}`)
-        .then(function (dados) {
-            const marcas = [];
-            const modelos = [];
+function preencherFiltrosVeiculo() {
+    const marcas = [];
+    const modelos = [];
 
-            dados.forEach(function (linha) {
-                if (linha.marca && !marcas.includes(linha.marca)) {
-                    marcas.push(linha.marca);
-                }
-                if (linha.tipoVeiculo && !modelos.includes(linha.tipoVeiculo)) {
-                    modelos.push(linha.tipoVeiculo);
-                }
-            });
+    todosVeiculos.forEach(function (veiculo) {
+        if (veiculo.marca && !marcas.includes(veiculo.marca)) {
+            marcas.push(veiculo.marca);
+        }
+        if (veiculo.tipoVeiculo && !modelos.includes(veiculo.tipoVeiculo)) {
+            modelos.push(veiculo.tipoVeiculo);
+        }
+    });
 
-            preencherSelect('selectMarca', marcas);
-            preencherSelect('selectModelo', modelos.sort());
-        })
-        .catch(function (erro) {
-            console.error(erro);
-        });
+    preencherSelect('selectMarca', marcas.sort());
+    preencherSelect('selectModelo', modelos.sort());
 }
 
 function criarCardVeiculo(veiculo) {
@@ -334,32 +383,47 @@ function criarCardVeiculo(veiculo) {
     return card;
 }
 
-function carregarGastoVeiculos() {
+// Filtros de marca e modelo: aplicados na lista já carregada, sem nova consulta
+function filtrarVeiculos() {
+    if (!todosVeiculos) return;
+
     const marca = document.getElementById('selectMarca').value;
     const modelo = document.getElementById('selectModelo').value;
-    const parametros = new URLSearchParams();
+    const lista = document.getElementById('listaVeiculos');
 
-    if (marca) parametros.append('marca', marca);
-    if (modelo) parametros.append('tipo', modelo);
+    const filtrados = todosVeiculos.filter(function (veiculo) {
+        return (!marca || veiculo.marca === marca) && (!modelo || veiculo.tipoVeiculo === modelo);
+    });
 
-    buscarJson(`/financas/gasto-veiculos/${empresaId}?${parametros.toString()}`)
+    lista.innerHTML = '';
+
+    if (filtrados.length === 0) {
+        const vazio = document.createElement('p');
+        vazio.textContent = 'Nenhum veículo encontrado.';
+        lista.appendChild(vazio);
+        return;
+    }
+
+    filtrados.forEach(function (veiculo) {
+        lista.appendChild(criarCardVeiculo(veiculo));
+    });
+}
+
+function carregarVeiculos() {
+    buscarJson(`/financas/gasto-veiculos/${empresaId}`)
         .then(function (veiculos) {
-            const lista = document.getElementById('listaVeiculos');
-            lista.innerHTML = '';
-
-            if (veiculos.length === 0) {
-                const vazio = document.createElement('p');
-                vazio.textContent = 'Nenhum veículo encontrado.';
-                lista.appendChild(vazio);
-                return;
-            }
-
-            veiculos.forEach(function (veiculo) {
-                lista.appendChild(criarCardVeiculo(veiculo));
-            });
+            todosVeiculos = veiculos;
+            preencherFiltrosVeiculo();
+            filtrarVeiculos();
         })
         .catch(function (erro) {
             console.error(erro);
+            const lista = document.getElementById('listaVeiculos');
+            lista.innerHTML = '';
+            const aviso = document.createElement('p');
+            aviso.className = 'mensagem-erro';
+            aviso.textContent = erro.message;
+            lista.appendChild(aviso);
         });
 }
 
@@ -368,22 +432,21 @@ function limparFiltrosVeiculo(evento) {
     document.getElementById('selectStatus').selectedIndex = 0;
     document.getElementById('selectMarca').value = '';
     document.getElementById('selectModelo').value = '';
-    carregarGastoVeiculos();
+    filtrarVeiculos();
 }
 
 // ===== Início =====
 if (empresaId) {
     document.getElementById('selectMes').value = new Date().getMonth() + 1;
 
-    document.getElementById('btnFiltrarMes').addEventListener('click', carregarGraficosDoMes);
-    document.getElementById('btnFiltrarVeiculos').addEventListener('click', carregarGastoVeiculos);
+    document.getElementById('btnFiltrarMes').addEventListener('click', filtrarMes);
+    document.getElementById('btnFiltrarVeiculos').addEventListener('click', filtrarVeiculos);
     document.getElementById('limparFiltros').addEventListener('click', limparFiltrosVeiculo);
 
     carregarKpis();
     carregarFaturamentoMensal();
-    carregarGraficosDoMes();
-    carregarFiltrosVeiculo();
-    carregarGastoVeiculos();
+    carregarGraficosDoAno();
+    carregarVeiculos();
 } else {
     console.error('EMPRESA_ID não encontrado na sessão. Faça login novamente.');
 }

@@ -13,7 +13,8 @@ function validarEmpresa(req, res) {
 function tratarErro(res, erro) {
     console.log(erro);
     console.log("\nHouve um erro ao buscar os dados do dashboard! Erro: ", erro.sqlMessage || erro.message);
-    res.status(500).send(erro.sqlMessage || erro.message || "Erro no servidor MySQL");
+    // o detalhe do erro fica só no terminal; o usuário recebe uma mensagem genérica
+    res.status(500).send("Erro ao buscar os dados do dashboard. Tente novamente mais tarde.");
 }
 
 function buscarFretesPorEstado(req, res) {

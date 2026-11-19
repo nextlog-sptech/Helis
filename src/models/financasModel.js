@@ -29,9 +29,11 @@ function buscarFaturamentoMensal(empresaId, ano) {
     return database.executar(instrucaoSql, [empresaId, ano]);
 }
 
-function buscarFretesPorFaixa(empresaId, ano, mes) {
+// Traz o ano inteiro de uma vez, separado por mês; o filtro de mês é feito no front-end
+function buscarFretesPorFaixa(empresaId, ano) {
     var instrucaoSql = `
         SELECT
+            MONTH(dataFrete) AS mes,
             CASE
                 WHEN valorFrete <= 5000 THEN 'Até 5 mil'
                 WHEN valorFrete <= 20000 THEN '5-20 mil'
@@ -43,60 +45,37 @@ function buscarFretesPorFaixa(empresaId, ano, mes) {
         WHERE idEmpresa = ?
           AND valorFrete IS NOT NULL
           AND YEAR(dataFrete) = ?
-          AND MONTH(dataFrete) = ?
-        GROUP BY faixa;
+        GROUP BY mes, faixa
+        ORDER BY mes;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql, [empresaId, ano, mes]);
+    return database.executar(instrucaoSql, [empresaId, ano]);
 }
 
-function buscarTopClientes(empresaId, ano, mes) {
+// Receita de cada cliente em cada mês do ano; o top 5 do mês é montado no front-end
+function buscarReceitaPorCliente(empresaId, ano) {
     var instrucaoSql = `
-        SELECT d.nome, COALESCE(SUM(f.valorFrete), 0) AS receita
+        SELECT MONTH(f.dataFrete) AS mes, d.nome, COALESCE(SUM(f.valorFrete), 0) AS receita
         FROM frete AS f
         JOIN destinatario AS d ON d.idDestinatario = f.destinatarioId
         WHERE f.idEmpresa = ?
           AND YEAR(f.dataFrete) = ?
-          AND MONTH(f.dataFrete) = ?
-        GROUP BY d.idDestinatario, d.nome
-        ORDER BY receita DESC
-        LIMIT 5;
+        GROUP BY mes, d.idDestinatario, d.nome
+        ORDER BY mes, receita DESC;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql, [empresaId, ano, mes]);
+    return database.executar(instrucaoSql, [empresaId, ano]);
 }
 
-function buscarGastoPorVeiculo(empresaId, marca, tipoVeiculo) {
-    var parametros = [empresaId];
-    var filtros = "";
-
-    if (marca) {
-        filtros += " AND v.marca = ?";
-        parametros.push(marca);
-    }
-    if (tipoVeiculo) {
-        filtros += " AND v.tipoVeiculo = ?";
-        parametros.push(tipoVeiculo);
-    }
-
+// Traz todos os veículos de uma vez; os filtros de marca e modelo são feitos no front-end
+function buscarGastoPorVeiculo(empresaId) {
     var instrucaoSql = `
         SELECT v.idVeiculo, v.placa, v.marca, v.tipoVeiculo, ${SOMA_GASTOS} AS gastoTotal
         FROM veiculo AS v
         LEFT JOIN kmrodado AS k ON k.idVeiculo = v.idVeiculo
-        WHERE v.empresaId = ?${filtros}
+        WHERE v.empresaId = ?
         GROUP BY v.idVeiculo, v.placa, v.marca, v.tipoVeiculo
         ORDER BY gastoTotal DESC;
-    `;
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql, parametros);
-}
-
-function buscarFiltrosVeiculo(empresaId) {
-    var instrucaoSql = `
-        SELECT DISTINCT marca, tipoVeiculo
-        FROM veiculo
-        WHERE empresaId = ?
-        ORDER BY marca, tipoVeiculo;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql, [empresaId]);
@@ -106,7 +85,6 @@ module.exports = {
     buscarKpis,
     buscarFaturamentoMensal,
     buscarFretesPorFaixa,
-    buscarTopClientes,
-    buscarGastoPorVeiculo,
-    buscarFiltrosVeiculo
+    buscarReceitaPorCliente,
+    buscarGastoPorVeiculo
 };

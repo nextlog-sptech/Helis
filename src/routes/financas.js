@@ -13,24 +13,19 @@ router.get("/faturamento-mensal/:empresaId", function (req, res) {
     financasController.buscarFaturamentoMensal(req, res);
 });
 
-// Gráfico de rosca: quantidade de fretes por faixa de valor no mês (?ano=2026&mes=9)
+// Gráfico de rosca: fretes por faixa de valor, de cada mês do ano (?ano=2026)
 router.get("/faixa-valor/:empresaId", function (req, res) {
     financasController.buscarFretesPorFaixa(req, res);
 });
 
-// Gráfico de rosca: top 5 clientes por receita no mês (?ano=2026&mes=9)
-router.get("/top-clientes/:empresaId", function (req, res) {
-    financasController.buscarTopClientes(req, res);
+// Gráfico de rosca: receita por cliente, de cada mês do ano (?ano=2026)
+router.get("/receita-clientes/:empresaId", function (req, res) {
+    financasController.buscarReceitaPorCliente(req, res);
 });
 
-// Lista de gasto por veículo (?marca=Volvo&tipo=Truck)
+// Lista de gasto por veículo (os filtros são aplicados no front-end)
 router.get("/gasto-veiculos/:empresaId", function (req, res) {
     financasController.buscarGastoPorVeiculo(req, res);
-});
-
-// Opções dos selects de marca e modelo
-router.get("/filtros-veiculo/:empresaId", function (req, res) {
-    financasController.buscarFiltrosVeiculo(req, res);
 });
 
 module.exports = router;

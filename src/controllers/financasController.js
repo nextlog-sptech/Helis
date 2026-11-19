@@ -10,21 +10,15 @@ function validarEmpresa(req, res) {
     return empresaId;
 }
 
-// Lê ano e mês da query string; se não vierem, usa o mês atual
-function lerAnoMes(req, res) {
-    var hoje = new Date();
-    var ano = req.query.ano ? Number(req.query.ano) : hoje.getFullYear();
-    var mes = req.query.mes ? Number(req.query.mes) : hoje.getMonth() + 1;
+// Lê o ano da query string; se não vier, usa o ano atual
+function lerAno(req, res) {
+    var ano = req.query.ano ? Number(req.query.ano) : new Date().getFullYear();
 
     if (!Number.isInteger(ano) || ano < 2000 || ano > 2100) {
         res.status(400).send("Ano inválido!");
         return null;
     }
-    if (!Number.isInteger(mes) || mes < 1 || mes > 12) {
-        res.status(400).send("Mês inválido! Deve estar entre 1 e 12.");
-        return null;
-    }
-    return { ano: ano, mes: mes };
+    return ano;
 }
 
 function responder(res, promessa) {
@@ -33,9 +27,10 @@ function responder(res, promessa) {
             res.status(200).json(resultado);
         })
         .catch(function (erro) {
+            // o detalhe do erro fica só no terminal; o usuário recebe uma mensagem genérica
             console.log(erro);
             console.log("\nHouve um erro ao buscar os dados de finanças! Erro: ", erro.sqlMessage || erro.message);
-            res.status(500).send(erro.sqlMessage || erro.message || "Erro no servidor MySQL");
+            res.status(500).send("Erro ao buscar os dados de finanças. Tente novamente mais tarde.");
         });
 }
 
@@ -61,54 +56,43 @@ function buscarFaturamentoMensal(req, res) {
     var empresaId = validarEmpresa(req, res);
     if (empresaId == null) return;
 
-    var periodo = lerAnoMes(req, res);
-    if (periodo == null) return;
+    var ano = lerAno(req, res);
+    if (ano == null) return;
 
-    responder(res, financasModel.buscarFaturamentoMensal(empresaId, periodo.ano));
+    responder(res, financasModel.buscarFaturamentoMensal(empresaId, ano));
 }
 
 function buscarFretesPorFaixa(req, res) {
     var empresaId = validarEmpresa(req, res);
     if (empresaId == null) return;
 
-    var periodo = lerAnoMes(req, res);
-    if (periodo == null) return;
+    var ano = lerAno(req, res);
+    if (ano == null) return;
 
-    responder(res, financasModel.buscarFretesPorFaixa(empresaId, periodo.ano, periodo.mes));
+    responder(res, financasModel.buscarFretesPorFaixa(empresaId, ano));
 }
 
-function buscarTopClientes(req, res) {
+function buscarReceitaPorCliente(req, res) {
     var empresaId = validarEmpresa(req, res);
     if (empresaId == null) return;
 
-    var periodo = lerAnoMes(req, res);
-    if (periodo == null) return;
+    var ano = lerAno(req, res);
+    if (ano == null) return;
 
-    responder(res, financasModel.buscarTopClientes(empresaId, periodo.ano, periodo.mes));
+    responder(res, financasModel.buscarReceitaPorCliente(empresaId, ano));
 }
 
 function buscarGastoPorVeiculo(req, res) {
     var empresaId = validarEmpresa(req, res);
     if (empresaId == null) return;
 
-    var marca = req.query.marca ? String(req.query.marca) : null;
-    var tipoVeiculo = req.query.tipo ? String(req.query.tipo) : null;
-
-    responder(res, financasModel.buscarGastoPorVeiculo(empresaId, marca, tipoVeiculo));
-}
-
-function buscarFiltrosVeiculo(req, res) {
-    var empresaId = validarEmpresa(req, res);
-    if (empresaId == null) return;
-
-    responder(res, financasModel.buscarFiltrosVeiculo(empresaId));
+    responder(res, financasModel.buscarGastoPorVeiculo(empresaId));
 }
 
 module.exports = {
     buscarKpis,
     buscarFaturamentoMensal,
     buscarFretesPorFaixa,
-    buscarTopClientes,
-    buscarGastoPorVeiculo,
-    buscarFiltrosVeiculo
+    buscarReceitaPorCliente,
+    buscarGastoPorVeiculo
 };
