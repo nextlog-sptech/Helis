@@ -1,9 +1,3 @@
--- Dados de teste para desenvolvimento local.
--- Rode depois do projetopi.sql (versão com frete.dataFrete):  mysql -uroot -p --default-character-set=utf8mb4 helis < src/database/dados-teste.sql
--- Senhas em texto puro: o login aceita e converte para bcrypt no primeiro acesso.
--- Login: ana@translog.test / senha123  (ou CNPJ 11222333000181)
--- Os IDs são buscados pelas chaves únicas, então o script funciona mesmo se o auto_increment já tiver avançado.
-
 use helis;
 
 start transaction;
@@ -46,8 +40,6 @@ insert into destinatario (cpf, nome, email, telefone, cidade, uf) values
 ('90123456787', 'Igor Martins', 'igor@cliente.test', '41988880004', 'Curitiba', 'PR'),
 ('01234567898', 'Juliana Freitas', 'juliana@cliente.test', '51988880005', 'Porto Alegre', 'RS');
 
--- frete: (cnpj da empresa, placa, docFiscal, dataFrete, valorFrete, peso, valorMercadoria, cpf do destinatário)
--- Fretes espalhados por 2026 (jan a nov) para os gráficos mensais terem dados.
 insert into frete (idEmpresa, veiculoId, docFiscal, dataFrete, valorFrete, peso, valorMercadoria, destinatarioId)
 select e.idEmpresa, v.idVeiculo, f.docFiscal, f.dataFrete, f.valorFrete, f.peso, f.valorMercadoria, d.idDestinatario
 from (

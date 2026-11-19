@@ -9,28 +9,23 @@ Chart.defaults.font.family = "'Inter', sans-serif";
 Chart.defaults.font.size = 11;
 Chart.defaults.color = '#7b8194';
 
-// ===== Empresa do usuário logado =====
 const empresaId = sessionStorage.EMPRESA_ID;
 const anoAtual = new Date().getFullYear();
 
 const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 const faixas = ['Até 5 mil', '5-20 mil', '20-50 mil', 'Acima de 50 mil'];
 
-// Dados buscados uma única vez; os filtros só trabalham em cima deles, sem consultar o banco de novo
 let dadosFaixas = null;
 let dadosClientes = null;
 let todosVeiculos = null;
 
-// guarda os gráficos de rosca para poder recriar quando o filtro mudar
 let graficoFaixa = null;
 let graficoCliente = null;
 
-// ===== Funções auxiliares =====
 function formatarReais(valor) {
     return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-// 15800 -> "15,8 mil" (para caber em cima das barras)
 function formatarAbreviado(valor) {
     if (valor >= 1000000) {
         return (valor / 1000000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mi';
@@ -41,7 +36,6 @@ function formatarAbreviado(valor) {
     return valor.toLocaleString('pt-BR');
 }
 
-// Faz a requisição e transforma qualquer problema em um erro com mensagem legível
 function buscarJson(url) {
     return fetch(url)
         .catch(function () {
@@ -57,7 +51,6 @@ function buscarJson(url) {
         });
 }
 
-// Troca o conteúdo de um gráfico/lista por uma mensagem de erro para o usuário
 function mostrarErro(elemento, mensagem) {
     let aviso = elemento.parentElement.querySelector('.mensagem-erro');
 
@@ -70,7 +63,6 @@ function mostrarErro(elemento, mensagem) {
     elemento.style.display = 'none';
 }
 
-// ===== KPIs =====
 function carregarKpis() {
     const ids = ['kpiReceita', 'kpiRentabilidade', 'kpiDespesas', 'kpiFretes'];
 
@@ -91,7 +83,6 @@ function carregarKpis() {
         });
 }
 
-// ===== Gráfico de barras: Faturamento Mensal =====
 const valoresNasBarras = {
     id: 'valoresNasBarras',
     afterDatasetsDraw: function (chart) {
@@ -114,7 +105,6 @@ const valoresNasBarras = {
 };
 
 function plotarFaturamentoMensal(dados) {
-    // mostra de janeiro até o mês atual; meses sem frete entram com 0
     const mesAtual = new Date().getMonth() + 1;
     const labels = meses.slice(0, mesAtual);
     const faturamentoMeses = labels.map(function (nome, i) {
@@ -139,7 +129,7 @@ function plotarFaturamentoMensal(dados) {
             responsive: true,
             maintainAspectRatio: false,
             layout: {
-                padding: { top: 20 } // espaço para o valor escrito em cima da barra
+                padding: { top: 20 }
             },
             plugins: {
                 legend: { display: false },
@@ -186,7 +176,6 @@ function carregarFaturamentoMensal() {
         });
 }
 
-// ===== Gráficos de rosca =====
 function criarRosca(idCanvas, idLegenda, nomes, valores, cores, formatarTooltip) {
     const legenda = document.getElementById(idLegenda);
     legenda.innerHTML = '';
@@ -246,7 +235,6 @@ function plotarFaixas(mes) {
         return Number(linha.mes) === mes;
     });
 
-    // mantém sempre a mesma ordem das faixas, ignorando as que não tiveram frete
     const nomes = [];
     const valores = [];
     const coresFaixas = [corLaranja, corAmarelo, corAzulEscuro, corVerdeAgua];
@@ -272,7 +260,6 @@ function plotarFaixas(mes) {
 }
 
 function plotarTopClientes(mes) {
-    // o banco já devolve ordenado pela receita, então basta pegar os 5 primeiros do mês
     const top5 = dadosClientes.filter(function (linha) {
         return Number(linha.mes) === mes;
     }).slice(0, 5);
@@ -291,7 +278,6 @@ function plotarTopClientes(mes) {
     graficoCliente = criarRosca('clienteChart', 'legendaCliente', nomes, valores, cores, formatarReais);
 }
 
-// Filtro de mês: só redesenha com os dados que já estão carregados
 function filtrarMes() {
     const mes = Number(document.getElementById('selectMes').value);
 
@@ -321,7 +307,6 @@ function carregarGraficosDoAno() {
         });
 }
 
-// ===== Gasto por veículo =====
 function preencherSelect(idSelect, valores) {
     const select = document.getElementById(idSelect);
 
@@ -383,7 +368,6 @@ function criarCardVeiculo(veiculo) {
     return card;
 }
 
-// Filtros de marca e modelo: aplicados na lista já carregada, sem nova consulta
 function filtrarVeiculos() {
     if (!todosVeiculos) return;
 
@@ -435,7 +419,6 @@ function limparFiltrosVeiculo(evento) {
     filtrarVeiculos();
 }
 
-// ===== Início =====
 if (empresaId) {
     document.getElementById('selectMes').value = new Date().getMonth() + 1;
 

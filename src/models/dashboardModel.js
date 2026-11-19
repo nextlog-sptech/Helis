@@ -15,7 +15,6 @@ function buscarFretesPorEstado(empresaId) {
 }
 
 function buscarFretesPorPeriodo(empresaId, qtdMeses) {
-    // Conta os fretes de cada mês, considerando o mês atual e os (qtdMeses - 1) anteriores
     var instrucaoSql = `
         SELECT DATE_FORMAT(dataFrete, '%Y-%m') AS mes, COUNT(idFrete) AS qtdFretes
         FROM frete

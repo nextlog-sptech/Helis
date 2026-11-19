@@ -10,7 +10,6 @@ function validarEmpresa(req, res) {
     return empresaId;
 }
 
-// Lê o ano da query string; se não vier, usa o ano atual
 function lerAno(req, res) {
     var ano = req.query.ano ? Number(req.query.ano) : new Date().getFullYear();
 
@@ -27,7 +26,6 @@ function responder(res, promessa) {
             res.status(200).json(resultado);
         })
         .catch(function (erro) {
-            // o detalhe do erro fica só no terminal; o usuário recebe uma mensagem genérica
             console.log(erro);
             console.log("\nHouve um erro ao buscar os dados de finanças! Erro: ", erro.sqlMessage || erro.message);
             res.status(500).send("Erro ao buscar os dados de finanças. Tente novamente mais tarde.");

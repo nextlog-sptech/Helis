@@ -10,7 +10,6 @@ Chart.defaults.font.family = "'Inter', sans-serif";
 Chart.defaults.font.size = 11;
 Chart.defaults.color = '#7b8194';
 
-// ===== Empresa do usuário logado =====
 const empresaId = sessionStorage.EMPRESA_ID;
 
 const nomesEstados = {
@@ -24,7 +23,6 @@ const nomesEstados = {
 
 const nomesMeses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
-// Faz a requisição e transforma qualquer problema em um erro com mensagem legível
 function buscarJson(url) {
     return fetch(url)
         .catch(function () {
@@ -40,7 +38,6 @@ function buscarJson(url) {
         });
 }
 
-// Troca o gráfico por uma mensagem de erro para o usuário
 function mostrarErro(idCanvas, mensagem) {
     const canvas = document.getElementById(idCanvas);
     const aviso = document.createElement('p');
@@ -78,7 +75,6 @@ function plotarFretesPorEstado(dados) {
     const fretesEstados = dados.map(function (linha) {
         return Number(linha.qtdFretes);
     });
-    // os dois estados com mais fretes ficam em azul e os demais em laranja
     const cores = fretesEstados.map(function (valor, i) {
         return i < 2 ? corAzul : corLaranja;
     });
@@ -98,7 +94,7 @@ function plotarFretesPorEstado(dados) {
             responsive: true,
             maintainAspectRatio: false,
             layout: {
-                padding: { top: 20 } // espaço para o valor escrito em cima da barra
+                padding: { top: 20 }
             },
             plugins: {
                 legend: { display: false }
@@ -223,7 +219,6 @@ new Chart(document.getElementById('graficoRegiao'), {
 const QTD_MESES_PERIODO = 7;
 
 function plotarFretesPorPeriodo(dados) {
-    // o banco só devolve os meses que tiveram frete, então os meses vazios entram com 0
     const labels = [];
     const valores = [];
     const hoje = new Date();
@@ -247,13 +242,13 @@ function plotarFretesPorPeriodo(dados) {
                 label: 'Fretes',
                 data: valores,
                 borderColor: corLaranja,
-                backgroundColor: 'rgba(255, 120, 0, 0.12)', // área clara abaixo da linha
+                backgroundColor: 'rgba(255, 120, 0, 0.12)',
                 fill: true,
-                tension: 0, // linhas retas, como no Figma
+                tension: 0,
                 borderWidth: 2,
                 pointRadius: 3,
                 pointBorderWidth: 2,
-                pointBackgroundColor: '#fff', // bolinha vazada
+                pointBackgroundColor: '#fff',
                 pointBorderColor: corLaranja
             }]
         },

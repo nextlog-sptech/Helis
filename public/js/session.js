@@ -29,10 +29,8 @@ function limparSessao() {
     window.location.replace('login.html');
 }
 
-// O sidebar está presente nas páginas internas do projeto.
 if (document.getElementById('sidebar')) {
     validarSessao();
-    // Valida também quando a página volta pelo botão Voltar do navegador.
     window.addEventListener('pageshow', validarSessao);
 }
 var paginaLogin = !!document.getElementById('form_login') || !!document.getElementById('ipt_user');

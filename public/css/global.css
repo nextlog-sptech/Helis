@@ -613,7 +613,6 @@
     }
 }
 
-/* Mensagem exibida quando a API não responde ou retorna erro */
 .mensagem-erro {
     color: var(--laranja);
     font-size: 13px;
