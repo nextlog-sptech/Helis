@@ -612,3 +612,10 @@
         }
     }
 }
+
+.mensagem-erro {
+    color: var(--laranja);
+    font-size: 13px;
+    text-align: center;
+    padding: 12px;
+}

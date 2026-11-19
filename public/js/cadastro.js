@@ -226,7 +226,7 @@ function voltar() {
 }
 
 function voltar2() {
-    limparErros(["input_cpf", "input_nomeresponsavel", "input_emailresponsavel", "input_telefoneresponsavel", "input_cargo", "input_senharesponsavel"]);
+    limparErros(["input_cpf", "input_nomeresponsavel", "input_emailresponsavel", "input_telefoneresponsavel", "input_senharesponsavel"]);
     mostrarMensagem("");
     document.getElementById("conteudo-responsavel").style.display = "none";
     document.getElementById("conteudo-endereco").style.display = "block";
@@ -240,7 +240,6 @@ function finalizar() {
     var nome = document.getElementById("input_nomeresponsavel").value.trim();
     var email = document.getElementById("input_emailresponsavel").value.trim();
     var telefone = document.getElementById("input_telefoneresponsavel").value;
-    var cargo = document.getElementById("input_cargo").value.trim();
     var senha = document.getElementById("input_senharesponsavel").value;
 
     limparErros([
@@ -248,7 +247,6 @@ function finalizar() {
         "input_nomeresponsavel",
         "input_emailresponsavel",
         "input_telefoneresponsavel",
-        "input_cargo",
         "input_senharesponsavel"
     ]);
 
@@ -259,7 +257,6 @@ function finalizar() {
         ["input_nomeresponsavel", "Informe o nome do responsável."],
         ["input_emailresponsavel", "Informe o e-mail do responsável."],
         ["input_telefoneresponsavel", "Informe o telefone do responsável."],
-        ["input_cargo", "Informe o cargo do responsável."],
         ["input_senharesponsavel", "Informe a senha do responsável."]
     ])) {
         return false;
@@ -314,7 +311,6 @@ function finalizar() {
         nomeResponsavelServer: nome,
         emailResponsavelServer: email,
         telefoneResponsavelServer: telefoneLimpo,
-        cargoServer: cargo,
         senhaResponsavelServer: senha
     };
 

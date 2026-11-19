@@ -12,7 +12,7 @@ function autenticar(email, senha) {
 function cadastrar(
     cnpj, razao, nomeFantasia, emailEmpresa, telefoneEmpresa, senhaEmpresa,
     cep, logradouro, numero, complemento, bairro, cidade,
-    cpf, nomeResponsavel, emailResponsavel, telefoneResponsavel, cargo, senhaResponsavel
+    cpf, nomeResponsavel, emailResponsavel, telefoneResponsavel, senhaResponsavel
 ) {
     console.log("ACESSEI O USUARIO MODEL - cadastrar");
 
@@ -41,8 +41,8 @@ function cadastrar(
     }).then(function (resultadoEmpresa) {
         var idEmpresa = resultadoEmpresa.insertId;
         var instrucaoUsuario = `
-            INSERT INTO usuario (cpf, nome, email, telefone, cargo, senha, empresaId) 
-            VALUES ('${cpfLimpo}', '${nomeResponsavel}', '${emailResponsavel}', '${telRespLimpo}', '${cargo}', '${senhaResponsavel}', ${idEmpresa});
+            INSERT INTO usuario (cpf, nome, email, telefone, adm, senha, empresaId) 
+            VALUES ('${cpfLimpo}', '${nomeResponsavel}', '${emailResponsavel}', '${telRespLimpo}', true, '${senhaResponsavel}', ${idEmpresa});
         `;
         console.log("Executando a instrução SQL (Usuário Responsável): \n" + instrucaoUsuario);
         return database.executar(instrucaoUsuario);
