@@ -57,7 +57,6 @@ function cadastrar(req, res) {
     var nomeResponsavel = req.body.nomeResponsavelServer;
     var emailResponsavel = req.body.emailResponsavelServer;
     var telefoneResponsavel = req.body.telefoneResponsavelServer;
-    var cargo = req.body.cargoServer;
     var senhaResponsavel = req.body.senhaResponsavelServer;
 
     var cnpjLimpo = cnpj ? cnpj.replace(/\D/g, '') : '';
@@ -97,15 +96,13 @@ function cadastrar(req, res) {
         res.status(400).send("E-mail do responsável inválido!");
     } else if (!telefoneResponsavel || (telRespLimpo.length !== 10 && telRespLimpo.length !== 11)) {
         res.status(400).send("Telefone do responsável inválido! Insira DDD + número.");
-    } else if (!cargo || cargo.trim().length < 2) {
-        res.status(400).send("Cargo do responsável inválido!");
     } else if (!senhaResponsavel || senhaResponsavel.length < 6) {
         res.status(400).send("Senha do responsável deve ter no mínimo 6 caracteres!");
     } else {
         usuarioModel.cadastrar(
             cnpj, razao, nomeFantasia, emailEmpresa, telefoneEmpresa, senhaEmpresa,
             cep, logradouro, numero, complemento, bairro, cidade,
-            cpf, nomeResponsavel, emailResponsavel, telefoneResponsavel, cargo, senhaResponsavel
+            cpf, nomeResponsavel, emailResponsavel, telefoneResponsavel, senhaResponsavel
         ).then(
             function (resultado) {
                 res.status(201).json(resultado);
