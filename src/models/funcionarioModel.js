@@ -1,130 +1,127 @@
 var database = require("../database/config");
 var bcrypt = require("bcryptjs");
 
-// Cria senha genérica
-function gerarSenhaTemporaria() {
-    var caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var senha = '';
 
-    for (var i = 0; i < 8; i++) {
-        var indice = Math.floor(Math.random() * caracteres.length);
-        senha += caracteres[indice];
-    }
-
-    return senha;
-}
-
-// Lista funcionários
 function listar(empresaId) {
     console.log("ACESSEI O FUNCIONARIOS MODEL - listar");
 
     var instrucaoSql = `
-        SELECT idUsuario, nome, email, telefone, cargo
+        SELECT idUsuario, cpf, nome, email, telefone, cargo, isAdmin
         FROM usuario
-        WHERE empresaId = ${Number(empresaId)}
+        WHERE empresaId = ?
         ORDER BY nome;
     `;
 
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
 
-    return database.executar(instrucaoSql);
+    return database.executar(instrucaoSql, [Number(empresaId)]);
 }
 
-//Cadastra funcionários
 async function cadastrar(funcionario, empresaId) {
     console.log("ACESSEI O FUNCIONARIOS MODEL - cadastrar");
 
-    var senhaTemporaria = gerarSenhaTemporaria();
-    var senhaHash = await bcrypt.hash(senhaTemporaria, 10);
+    var senhaHash = await bcrypt.hash(funcionario.senha, 10);
 
     var instrucaoSql = `
-        INSERT INTO usuario (cpf, nome, email, telefone, cargo, senha, empresaId)
-        VALUES (
-            NULL,
-            '${funcionario.nome}',
-            '${funcionario.email}',
-            '${funcionario.telefone}',
-            '${funcionario.cargo}',
-            '${senhaHash}',
-            ${Number(empresaId)}
-        );
+        INSERT INTO usuario (cpf, nome, email, telefone, cargo, isAdmin, senha, empresaId)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    var parametros = [
+        funcionario.cpf,
+        funcionario.nome,
+        funcionario.email,
+        funcionario.telefone,
+        funcionario.cargo,
+        funcionario.isAdmin ? 1 : 0,
+        senhaHash,
+        Number(empresaId),
+        
+    ];
 
-    return database.executar(instrucaoSql).then(function (resultado) {
+    return database.executar(instrucaoSql, parametros).then(function (resultado) {
         return {
-            idUsuario: resultado.insertId,
-            senhaTemporaria: senhaTemporaria
+            idUsuario: resultado.insertId
         };
     });
 }
 
-// Busca um e-mail já cadastrado no sistema
 function buscarEmail(email, idIgnorar) {
     console.log("ACESSEI O FUNCIONARIOS MODEL - buscarEmail");
 
     var instrucaoSql = `
         SELECT idUsuario
         FROM usuario
-        WHERE LOWER(email) = LOWER('${email}')
-        ${idIgnorar ? `AND idUsuario <> ${Number(idIgnorar)}` : ''};
+        WHERE LOWER(email) = LOWER(?)
+        ${idIgnorar ? `AND idUsuario <> ?` : ''};
     `;
 
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    var parametros = idIgnorar
+        ? [email, Number(idIgnorar)]
+        : [email];
 
-    return database.executar(instrucaoSql);
+    return database.executar(instrucaoSql, parametros);
 }
 
-// Busca um funcionário específico da empresa
 function buscarPorId(idUsuario, empresaId) {
     console.log("ACESSEI O FUNCIONARIOS MODEL - buscarPorId");
 
     var instrucaoSql = `
         SELECT idUsuario
         FROM usuario
-        WHERE idUsuario = ${Number(idUsuario)}
-        AND empresaId = ${Number(empresaId)};
+        WHERE idUsuario = ?
+        AND empresaId = ?;
     `;
 
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-
-    return database.executar(instrucaoSql);
+    return database.executar(instrucaoSql, [
+        Number(idUsuario),
+        Number(empresaId)
+    ]);
 }
 
-// Edita os dados de um funcionário
 function editar(idUsuario, funcionario, empresaId) {
     console.log("ACESSEI O FUNCIONARIOS MODEL - editar");
 
     var instrucaoSql = `
         UPDATE usuario
         SET
-            nome = '${funcionario.nome}',
-            email = '${funcionario.email}',
-            telefone = '${funcionario.telefone}',
-            cargo = '${funcionario.cargo}'
-        WHERE idUsuario = ${Number(idUsuario)}
-        AND empresaId = ${Number(empresaId)};
+            cpf = ?,
+            nome = ?,
+            email = ?,
+            telefone = ?,
+            cargo = ?,
+            isAdmin = ?
+        WHERE idUsuario = ?
+        AND empresaId = ?;
     `;
+     var parametros = [
+        funcionario.cpf,
+        funcionario.nome,
+        funcionario.email,
+        funcionario.telefone,
+        funcionario.cargo,
+        funcionario.isAdmin ? 1 : 0,
+        Number(idUsuario),
+        Number(empresaId)
+    ];
 
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-
-    return database.executar(instrucaoSql);
+    return database.executar(instrucaoSql, parametros);
 }
 
-// Exclui um funcionário
 function excluir(idUsuario, empresaId) {
     console.log("ACESSEI O FUNCIONARIOS MODEL - excluir");
 
     var instrucaoSql = `
         DELETE FROM usuario
-        WHERE idUsuario = ${Number(idUsuario)}
-        AND empresaId = ${Number(empresaId)};
+        WHERE idUsuario = ?
+        AND empresaId = ?;
     `;
 
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
 
-    return database.executar(instrucaoSql);
+    return database.executar(instrucaoSql, [
+        Number(idUsuario),
+        Number(empresaId)
+    ]);
 }
 
 module.exports = {

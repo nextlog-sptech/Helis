@@ -33,6 +33,7 @@ create table usuario(
     cargo varchar(30),
     senha varchar(255),
     empresaId int,
+    isAdmin boolean default false,
     constraint fkUsuarioEmpresa
         foreign key(empresaId)
             references empresa(idEmpresa)
@@ -126,14 +127,12 @@ create table notificacao(
             references usuario(idUsuario)
 );
 
-create table log(
-    idLog int primary key auto_increment,
-    tipo varchar(45),
-    horario datetime,
-    mensagem varchar(300),
-    servico varchar(45),
-    qtdRegistrosLidos INT,
-    tempoLeituraMs BIGINT
+create table configuracoes(
+enderecoEnvio varchar(100),
+ativado boolean default false,
+iniciarLeitura boolean default false,
+finalizarLeitura boolean default false,
+falha boolean default false
 );
 
 
@@ -163,3 +162,5 @@ VALUES
 ('45678901234', 'Juliana Oliveira', 'juliana@rioexpress.com.br', '21945678901', 'Administrador', 'senha101', 4),
 ('56789012345', 'Fernando Lima', 'fernando@paranalog.com.br', '41956789012', 'Motorista', 'senha202', 5),
 ('67890123456', 'Isabela Souza', 'isabela@bahiatransportes.com.br', '71967890123', 'Gestor de Logistica', 'senha303', 6);
+
+

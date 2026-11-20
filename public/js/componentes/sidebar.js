@@ -14,7 +14,7 @@ sidebar.innerHTML = `
                    <a href="comercial.html" id="linkFinancas" class="link">
                     <i class="fa-solid fa-wallet"></i> Comercial
                 </a>
-                <a href="motoristas.html"  id="linkMoto"class="link">
+                <a href="funcionarios.html"  id="linkMoto"class="link">
                     <i class="fa-solid fa-user"></i> Funcionários
                 </a>
              

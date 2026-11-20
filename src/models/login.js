@@ -7,7 +7,7 @@ async function buscarPorIdentificador(identificador) {
       u.nome,
       u.email,
       u.senha,
-      u.empresaId
+      u.empresaId,
       u.cargo
     FROM usuario AS u
     LEFT JOIN empresa AS e ON e.idEmpresa = u.empresaId

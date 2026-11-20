@@ -1,86 +1,383 @@
-// Demonstração do front-end. O array volta ao estado inicial ao recarregar.
-// Não cria contas de acesso e não grava dados no banco.
-var funcionarios = [
-    { nome: 'Carlos Almeida', email: 'carlos@example.com', telefone: '11912345678', cargo: 'Administrador' },
-    { nome: 'Mariana Costa', email: 'mariana@example.com', telefone: '11923456789', cargo: 'Gestor de Logística' },
-    { nome: 'Rafael Santos', email: 'rafael@example.com', telefone: '11934567890', cargo: 'Analista de Logística' },
-    { nome: 'Fernando Lima', email: 'fernando@example.com', telefone: '11945678901', cargo: 'Motorista' },
-    { nome: 'Paulo Souza', email: 'paulo@example.com', telefone: '11956789012', cargo: 'Motorista' }
-];
+var API_FUNCIONARIOS = '/funcionario';
+
+var funcionarios = [];
+
 var indiceEdicao = -1;
-// Mesmo cuidado utilizado no veiculos.js ao exibir texto digitado.
+
+function obterEmpresaId() {
+    var empresaId = sessionStorage.getItem('EMPRESA_ID');
+
+    if (!empresaId || isNaN(Number(empresaId))) {
+        throw new Error('Não foi possível identificar a empresa do usuário logado.' );
+    }
+
+    return Number(empresaId);
+}
+
+async function requisicaoAPI(url, opcoes) {
+    var resposta = await fetch(url, {
+        ...opcoes,
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            ...(opcoes && opcoes.headers ? opcoes.headers : {})
+        }
+    });
+
+    var dados = {};
+
+    try {
+        dados = await resposta.json();
+    } catch (erro) {
+        dados = {};
+    }
+
+    if (!resposta.ok) {
+        throw new Error(
+            dados.erro ||
+            dados.mensagem ||
+            'Não foi possível realizar a operação.'
+        );
+    }
+
+    return dados;
+}
+
 function escapar(texto) {
     var elemento = document.createElement('div');
-    elemento.textContent = texto;
+    elemento.textContent = texto == null ? '' : String(texto);
     return elemento.innerHTML;
 }
-function listarFuncionarios() {
+async function listarFuncionarios() {
     var busca = document.getElementById('busca').value.trim().toLowerCase();
     var cargo = document.getElementById('cargo').value;
     var lista = document.getElementById('lista');
+    var quantidade = document.getElementById('quantidade');
+    var semResultado = document.getElementById('sem-resultado');
+    var mensagem = document.getElementById('mensagem');
+
+
     lista.innerHTML = '';
-    var quantidade = 0;
+
+    mensagem.textContent = '';
+
+    try {
+        var empresaId = obterEmpresaId();
+
+        var dados = await requisicaoAPI(
+            API_FUNCIONARIOS + '?empresaId=' + empresaId,
+            {
+                method: 'GET'
+            }
+        );
+
+    funcionarios = Array.isArray(dados)
+    ? dados
+    : (dados.funcionarios || []);
+
+    var quantidadeEncontrada = 0;
+
     for (var i = 0; i < funcionarios.length; i++) {
         var funcionario = funcionarios[i];
-        var texto = (funcionario.nome + ' ' + funcionario.email).toLowerCase();
-        if (texto.includes(busca) && (!cargo || cargo === funcionario.cargo)) {
-            lista.innerHTML += `<tr><td>${escapar(funcionario.nome)}</td><td>${escapar(funcionario.cargo)}</td><td>${escapar(funcionario.email)}</td><td>${escapar(funcionario.telefone)}</td><td><button class="btn-limpar" onclick="abrirFormulario(${i})">Editar</button></td></tr>`;
-            quantidade++;
+
+        var texto = (
+            funcionario.nome + ' ' +
+            funcionario.email + ' ' +
+            (funcionario.cpf || '')
+        ).toLowerCase();
+
+        if (
+            texto.includes(busca) &&
+            (!cargo || cargo === funcionario.cargo)
+        ) {
+            lista.innerHTML += `
+                <tr>
+                    <td>${escapar(funcionario.nome)}</td>
+                    <td>${escapar(funcionario.email)}</td>
+                    <td>${escapar(funcionario.cargo)}</td>
+                    <td>${escapar(funcionario.telefone)}</td>
+                    <td>
+                        <div class="acoes-tabela">
+                            <button
+                                type="button"
+                                class="btn-editar"
+                                onclick="abrirFormulario(${Number(funcionario.idUsuario)})"
+                                title="Editar funcionário"
+                            >
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn-excluir"
+                                onclick="excluirFuncionario(${Number(funcionario.idUsuario)})"
+                                title="Excluir funcionário"
+                            >
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            quantidadeEncontrada++;
         }
     }
-    document.getElementById('quantidade').textContent = quantidade;
-    document.getElementById('sem-resultado').hidden = quantidade > 0;
+
+    quantidade.textContent = quantidadeEncontrada;
+
+    semResultado.hidden = quantidadeEncontrada > 0;
+
+    } catch (erro) {
+        console.error('Erro ao listar funcionários:', erro);
+
+        quantidade.textContent = '0';
+
+        semResultado.hidden = false;
+
+        mensagem.textContent = erro.message;
+    }
 }
+
 function limparFiltros() {
     document.getElementById('form-filtros').reset();
     listarFuncionarios();
 }
-function abrirFormulario(indice) {
-    indiceEdicao = indice;
-    document.getElementById('form-funcionario').reset();
+function abrirFormulario(idUsuario) {
+    indiceEdicao = idUsuario;
+
+    var formulario = document.getElementById('form-funcionario');
+    var campoSenha = document.getElementById('senha');
+
+    formulario.reset();
+    limparErrosCampos();
+
     document.getElementById('erro-formulario').textContent = '';
     document.getElementById('mensagem').textContent = '';
-    document.getElementById('titulo-formulario').textContent = indice === -1 ? 'Novo funcionário' : 'Editar funcionário';
-    if (indice !== -1) {
-        document.getElementById('nome').value = funcionarios[indice].nome;
-        document.getElementById('email').value = funcionarios[indice].email;
-        document.getElementById('telefone').value = funcionarios[indice].telefone;
-        document.getElementById('cargo-funcionario').value = funcionarios[indice].cargo;
+
+    document.getElementById('titulo-formulario').textContent =
+        idUsuario === -1 ? 'Novo funcionário' : 'Editar funcionário';
+
+    campoSenha.required = idUsuario === -1;
+    campoSenha.value = '';
+    campoSenha.disabled = idUsuario !== -1;
+
+    if (idUsuario !== -1) {
+        var funcionario = funcionarios.find(function(item) {
+            return Number(item.idUsuario) === Number(idUsuario);
+        });
+
+        if (!funcionario) {
+            document.getElementById('mensagem').textContent =
+                'Funcionário não encontrado. Atualize a lista.';
+            return;
+        }
+
+        document.getElementById('nome').value = funcionario.nome || '';
+        document.getElementById('email').value = funcionario.email || '';
+        document.getElementById('cpf').value = funcionario.cpf || '';
+        document.getElementById('telefone').value = funcionario.telefone || '';
+        document.getElementById('cargo-funcionario').value = funcionario.cargo || '';
+        document.getElementById('isAdmin').checked = funcionario.isAdmin === 1 || funcionario.isAdmin === true;
     }
-    document.getElementById('form-funcionario').hidden = false;
+
+    formulario.hidden = false;
     document.getElementById('nome').focus();
 }
 function fecharFormulario() {
     document.getElementById('form-funcionario').hidden = true;
+    indiceEdicao = -1;
     document.getElementById('busca').focus();
 }
-function salvarFuncionario(evento) {
+
+async function salvarFuncionario(evento) {
     evento.preventDefault();
+
+    var erroFormulario = document.getElementById('erro-formulario');
+    var estaEditando = indiceEdicao !== -1;
+
+    erroFormulario.textContent = '';
+
+    limparErrosCampos();
+
     var funcionario = {
         nome: document.getElementById('nome').value.trim(),
         email: document.getElementById('email').value.trim().toLowerCase(),
+        cpf: document.getElementById('cpf').value.trim(),
         telefone: document.getElementById('telefone').value.trim(),
-        cargo: document.getElementById('cargo-funcionario').value
+        cargo: document.getElementById('cargo-funcionario').value,
+        isAdmin: document.getElementById('isAdmin').checked
     };
+
+    var formularioValido = true;
+
     if (!funcionario.nome) {
-        document.getElementById('erro-formulario').textContent = 'Preencha o nome.';
+        mostrarErroCampo('nome', 'Preencha o nome.');
+        formularioValido = false;
+    } else if (funcionario.nome.length < 3) {
+        mostrarErroCampo('nome', 'O nome deve possuir pelo menos 3 caracteres.');
+        formularioValido = false;
+    }
+
+    if (!funcionario.email) {
+        mostrarErroCampo('email', 'Preencha o e-mail.');
+        formularioValido = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(funcionario.email)) {
+        mostrarErroCampo('email', 'Informe um e-mail válido.');
+        formularioValido = false;
+    }
+
+    if (funcionario.cpf.replace(/\D/g, '').length !== 11) {
+        mostrarErroCampo('cpf', 'CPF inválido. Informe 11 dígitos.');
+        formularioValido = false;
+    }
+
+    if (!funcionario.telefone) {
+        mostrarErroCampo('telefone', 'Preencha o telefone.');
+        formularioValido = false;
+    }
+
+    if (!funcionario.cargo) {
+        mostrarErroCampo('cargo-funcionario', 'Selecione o cargo.');
+        formularioValido = false;
+    }
+
+    if (!estaEditando) {
+        var senha = document.getElementById('senha').value;
+
+        if (senha.length < 8) {
+            mostrarErroCampo('senha', 'A senha deve possuir pelo menos 8 caracteres.');
+            formularioValido = false;
+        }
+
+        funcionario.senha = senha;
+    }
+
+    if (!formularioValido) {
         return;
     }
-    for (var i = 0; i < funcionarios.length; i++) {
-        if (i !== indiceEdicao && funcionarios[i].email === funcionario.email) {
-            document.getElementById('erro-formulario').textContent = 'Este e-mail já está na lista.';
-            return;
+
+    try {
+        var empresaId = obterEmpresaId();
+
+        funcionario.empresaId = empresaId;
+
+        var resposta;
+
+        if (!estaEditando) {
+            resposta = await requisicaoAPI(
+                API_FUNCIONARIOS,
+                {
+                    method: 'POST',
+                    body: JSON.stringify(funcionario)
+                }
+            );
+        } else {
+            resposta = await requisicaoAPI(
+                API_FUNCIONARIOS + '/' + indiceEdicao,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify(funcionario)
+                }
+            );
+        }
+
+        fecharFormulario();
+
+        await listarFuncionarios();
+
+        var mensagem = resposta.mensagem ||
+            (estaEditando
+                ? 'Funcionário atualizado com sucesso!'
+                : 'Funcionário cadastrado com sucesso!');
+
+        document.getElementById('mensagem').textContent = mensagem;
+
+    } catch (erro) {
+        console.error('Erro ao salvar funcionário:', erro);
+
+        erroFormulario.textContent = erro.message;
+    }
+}
+
+
+function mostrarErroCampo(campo, mensagem) {
+    var elemento = document.getElementById(campo);
+    var mensagemErro = document.getElementById('erro-' + campo);
+
+    elemento.classList.add('erro');
+    mensagemErro.textContent = mensagem;
+}
+
+function limparErrosCampos() {
+    var campos = [
+        'nome',
+        'email',
+        'cpf',
+        'telefone',
+        'cargo-funcionario',
+        'senha'
+    ];
+
+    for (var i = 0; i < campos.length; i++) {
+        var elemento = document.getElementById(campos[i]);
+        var mensagemErro = document.getElementById('erro-' + campos[i]);
+
+        if (elemento) {
+            elemento.classList.remove('erro');
+        }
+
+        if (mensagemErro) {
+            mensagemErro.textContent = '';
         }
     }
-    if (indiceEdicao === -1) funcionarios.push(funcionario);
-    else funcionarios[indiceEdicao] = funcionario;
-    fecharFormulario();
-    limparFiltros();
-    document.getElementById('mensagem').textContent = 'Exemplo salvo nesta tela. Ao recarregar, os dados iniciais serão restaurados.';
 }
-document.getElementById('form-filtros').addEventListener('submit', function(evento) {
-    evento.preventDefault();
-    listarFuncionarios();
-});
-document.getElementById('form-funcionario').addEventListener('submit', salvarFuncionario);
+async function excluirFuncionario(indice) {
+    var confirmar = confirm(
+        'Tem certeza que deseja excluir este funcionário?'
+    );
+
+    if (!confirmar) {
+        return;
+    }
+
+    try {
+        var empresaId = obterEmpresaId();
+
+        var resposta = await requisicaoAPI(
+            API_FUNCIONARIOS + '/' + indice +
+            '?empresaId=' + empresaId,
+            {
+                method: 'DELETE'
+            }
+        );
+
+        await listarFuncionarios();
+
+        document.getElementById('mensagem').textContent = resposta.mensagem || 'Funcionário excluído com sucesso!';
+
+    } catch (erro) {
+        console.error('Erro ao excluir funcionário:', erro);
+
+        document.getElementById('mensagem').textContent =
+            erro.message;
+    }
+}
+
+
+document.getElementById('form-filtros').addEventListener(
+    'submit',
+    function(evento) {
+        evento.preventDefault();
+
+        listarFuncionarios();
+    }
+);
+
+document.getElementById('form-funcionario').addEventListener(
+    'submit',
+    salvarFuncionario
+);
+
+
 listarFuncionarios();
