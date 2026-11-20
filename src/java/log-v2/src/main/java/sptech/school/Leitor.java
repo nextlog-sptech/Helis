@@ -58,7 +58,8 @@ public class Leitor {
 
             log.setTipo("ERRO");
             log.setHorario(LocalDateTime.now());
-            log.setMensagem("Falha na leitura");
+            String mensagem = "Falha na leitura: " + e.getMessage();
+            log.setMensagem(mensagem.length() > 300 ? mensagem.substring(0, 300) : mensagem);
             log.setServico("LEITURA");
             log.setQtdRegistrosLidos(qtdRegistrosLidos);
             log.setTempoLeituraMs(tempoLeituraMs);
