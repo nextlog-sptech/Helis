@@ -1,4 +1,79 @@
 setarTema(false)
+document.body.insertAdjacentHTML("beforeend", `
+    <div class="modal-config-fundo" id="modalConfig" onclick="fecharModalConfig()">
+        <div class="modal-config" onclick="event.stopPropagation()">
+            <button type="button" class="modal-config-fechar" onclick="fecharModalConfig()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2 class="modal-config-titulo">Configurações</h2>
+
+            <div class="modal-config-linha">
+                <span class="modal-config-texto">Modo escuro</span>
+                <label class="modal-config-toggle">
+                    <input type="checkbox" onchange="setarTema(true)" ${localStorage.TEMA === "escuro"?'checked':''}>
+                    <span class="modal-config-slider"></span>
+                </label>
+            </div>
+
+            <div class="modal-config-linha">
+                <span class="modal-config-texto">Notificações</span>
+                <label class="modal-config-toggle">
+                    <input type="checkbox" onchange="alternarNotificacoes(this)">
+                    <span class="modal-config-slider"></span>
+                </label>
+            </div>
+
+            <p class="modal-config-subtitulo">Notificar quando:</p>
+
+            <div class="modal-config-subs bloqueado" id="modalConfigSubs">
+                <div class="modal-config-linha">
+                    <span class="modal-config-texto">Iniciar leitura</span>
+                    <label class="modal-config-toggle">
+                        <input type="checkbox" disabled onchange="avisar(this, 'Iniciar leitura')">
+                        <span class="modal-config-slider"></span>
+                    </label>
+                </div>
+                <div class="modal-config-linha">
+                    <span class="modal-config-texto">Finalizar leitura</span>
+                    <label class="modal-config-toggle">
+                        <input type="checkbox" disabled onchange="avisar(this, 'Finalizar leitura')">
+                        <span class="modal-config-slider"></span>
+                    </label>
+                </div>
+                <div class="modal-config-linha">
+                    <span class="modal-config-texto">Falha na leitura</span>
+                    <label class="modal-config-toggle">
+                        <input type="checkbox" disabled onchange="avisar(this, 'Falha na leitura')">
+                        <span class="modal-config-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+`);
+
+function abrirModalConfig() {
+    document.getElementById("modalConfig").classList.add("aberto");
+}
+
+function fecharModalConfig() {
+    document.getElementById("modalConfig").classList.remove("aberto");
+}
+
+function avisar(input, nome) {
+   
+}
+
+function alternarNotificacoes(input) {
+    alert("Notificações " + (input.checked ? "ativadas" : "desativadas"));
+
+    const subs = document.getElementById("modalConfigSubs");
+    subs.classList.toggle("bloqueado", !input.checked);
+    subs.querySelectorAll("input").forEach(function (sub) {
+        sub.disabled = !input.checked;
+    });
+}
+
 sidebar.innerHTML = `
  <a class="logo" href="dashboard.html"><img src="assets/icon/logo.png" alt=""></a>
             <div class="links">
@@ -22,7 +97,7 @@ sidebar.innerHTML = `
 `;
 
 userNav.innerHTML = `
- <button onclick="setarTema(true)" href="" class="userButton temaButton"> <i class="fa-regular   fa-sun"></i></button>
+ <button onclick="abrirModalConfig()" href="" class="userButton temaButton"> <i class="fa-regular   fa-sun"></i></button>
 
                     <a href="" class="buttonSair" onclick="sessionStorage.clear()">Sair</a>`;
 
@@ -85,3 +160,5 @@ if (!document.getElementById("script-bobia-component")) {
     scriptBobia.src = "js/componentes/bobia.js";
     document.body.appendChild(scriptBobia);
 }
+
+

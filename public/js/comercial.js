@@ -9,8 +9,79 @@ Chart.defaults.font.family = "'Inter', sans-serif";
 Chart.defaults.font.size = 11;
 Chart.defaults.color = '#7b8194';
 
-const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro'];
-const faturamentoMeses = [158, 46, 90, 95, 155, 160, 156, 96, 156];
+const empresaId = sessionStorage.EMPRESA_ID;
+const anoAtual = new Date().getFullYear();
+
+const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+const faixas = ['Até 5 mil', '5-20 mil', '20-50 mil', 'Acima de 50 mil'];
+
+let dadosFaixas = null;
+let dadosClientes = null;
+let todosVeiculos = null;
+
+let graficoFaixa = null;
+let graficoCliente = null;
+
+function formatarReais(valor) {
+    return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function formatarAbreviado(valor) {
+    if (valor >= 1000000) {
+        return (valor / 1000000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mi';
+    }
+    if (valor >= 1000) {
+        return (valor / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mil';
+    }
+    return valor.toLocaleString('pt-BR');
+}
+
+function buscarJson(url) {
+    return fetch(url)
+        .catch(function () {
+            throw new Error('Não foi possível conectar ao servidor. Verifique sua conexão.');
+        })
+        .then(function (resposta) {
+            if (!resposta.ok) {
+                return resposta.text().then(function (mensagem) {
+                    throw new Error(mensagem || 'Erro ao carregar os dados (' + resposta.status + ').');
+                });
+            }
+            return resposta.json();
+        });
+}
+
+function mostrarErro(elemento, mensagem) {
+    let aviso = elemento.parentElement.querySelector('.mensagem-erro');
+
+    if (!aviso) {
+        aviso = document.createElement('p');
+        aviso.className = 'mensagem-erro';
+        elemento.parentElement.insertBefore(aviso, elemento);
+    }
+    aviso.textContent = mensagem;
+    elemento.style.display = 'none';
+}
+
+function carregarKpis() {
+    const ids = ['kpiReceita', 'kpiRentabilidade', 'kpiDespesas', 'kpiFretes'];
+
+    buscarJson(`/financas/kpis/${empresaId}`)
+        .then(function (kpis) {
+            document.getElementById('kpiReceita').textContent = formatarReais(kpis.receitaBruta);
+            document.getElementById('kpiRentabilidade').textContent = formatarReais(kpis.rentabilidade);
+            document.getElementById('kpiDespesas').textContent = formatarReais(kpis.despesas);
+            document.getElementById('kpiFretes').textContent = kpis.qtdFretes.toLocaleString('pt-BR');
+        })
+        .catch(function (erro) {
+            console.error(erro);
+            ids.forEach(function (id) {
+                const kpi = document.getElementById(id);
+                kpi.textContent = '--';
+                kpi.title = erro.message;
+            });
+        });
+}
 
 const valoresNasBarras = {
     id: 'valoresNasBarras',
@@ -23,53 +94,97 @@ const valoresNasBarras = {
         ctx.textBaseline = 'bottom';
 
         chart.getDatasetMeta(0).data.forEach(function (barra, i) {
-            ctx.fillText(chart.data.datasets[0].data[i], barra.x, barra.y - 4);
+            const valor = chart.data.datasets[0].data[i];
+            if (valor > 0) {
+                ctx.fillText(formatarAbreviado(valor), barra.x, barra.y - 4);
+            }
         });
 
         ctx.restore();
     }
 };
 
-new Chart(document.getElementById('faturamentoChart'), {
-    type: 'bar',
-    data: {
-        labels: meses,
-        datasets: [{
-            label: 'Faturamento',
-            data: faturamentoMeses,
-            backgroundColor: corAzul,
-            borderRadius: 4
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { display: false }
+function plotarFaturamentoMensal(dados) {
+    const mesAtual = new Date().getMonth() + 1;
+    const labels = meses.slice(0, mesAtual);
+    const faturamentoMeses = labels.map(function (nome, i) {
+        const encontrado = dados.find(function (linha) {
+            return Number(linha.mes) === i + 1;
+        });
+        return encontrado ? Number(encontrado.faturamento) : 0;
+    });
+
+    new Chart(document.getElementById('faturamentoChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Faturamento',
+                data: faturamentoMeses,
+                backgroundColor: corAzul,
+                borderRadius: 4
+            }]
         },
-        datasets: {
-            bar: {
-                barPercentage: 0.6,
-                categoryPercentage: 0.9
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 200,
-                ticks: { stepSize: 50 },
-                border: { display: false }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: { top: 20 }
             },
-            x: {
-                grid: { display: false }
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (item) {
+                            return 'Faturamento: ' + formatarReais(item.raw);
+                        }
+                    }
+                }
+            },
+            datasets: {
+                bar: {
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.9
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        maxTicksLimit: 5,
+                        callback: function (valor) {
+                            return formatarAbreviado(valor);
+                        }
+                    },
+                    border: { display: false }
+                },
+                x: {
+                    grid: { display: false }
+                }
             }
-        }
-    },
-    plugins: [valoresNasBarras]
-});
+        },
+        plugins: [valoresNasBarras]
+    });
+}
+
+function carregarFaturamentoMensal() {
+    buscarJson(`/financas/faturamento-mensal/${empresaId}?ano=${anoAtual}`)
+        .then(plotarFaturamentoMensal)
+        .catch(function (erro) {
+            console.error(erro);
+            mostrarErro(document.getElementById('faturamentoChart'), erro.message);
+        });
+}
 
 function criarRosca(idCanvas, idLegenda, nomes, valores, cores, formatarTooltip) {
     const legenda = document.getElementById(idLegenda);
+    legenda.innerHTML = '';
+
+    if (nomes.length === 0) {
+        const vazio = document.createElement('p');
+        vazio.textContent = 'Sem fretes neste mês';
+        legenda.appendChild(vazio);
+    }
 
     nomes.forEach(function (nome, i) {
         const item = document.createElement('div');
@@ -87,7 +202,7 @@ function criarRosca(idCanvas, idLegenda, nomes, valores, cores, formatarTooltip)
         legenda.appendChild(item);
     });
 
-    new Chart(document.getElementById(idCanvas), {
+    return new Chart(document.getElementById(idCanvas), {
         type: 'doughnut',
         data: {
             labels: nomes,
@@ -115,24 +230,206 @@ function criarRosca(idCanvas, idLegenda, nomes, valores, cores, formatarTooltip)
     });
 }
 
-criarRosca(
-    'faixaChart',
-    'legendaFaixa',
-    ['Até 5 mil', '5-20 mil', '20-50 mil', 'Acima de 50 mil'],
-    [22, 22, 26, 30],
-    [corLaranja, corAmarelo, corAzulEscuro, corVerdeAgua],
-    function (valor) {
-        return valor + ' fretes';
-    }
-);
+function plotarFaixas(mes) {
+    const dadosDoMes = dadosFaixas.filter(function (linha) {
+        return Number(linha.mes) === mes;
+    });
 
-criarRosca(
-    'clienteChart',
-    'legendaCliente',
-    ['Magazine Luiza', 'Carrefour Brasil', 'Via Varejo', 'Ambev S.A.', 'Mercado Livre'],
-    [35000, 22000, 20000, 15000, 8000],
-    [corLaranja, corAmarelo, corAzulEscuro, corVerdeAgua, corAzul],
-    function (valor) {
-        return 'R$ ' + valor.toLocaleString('pt-BR');
+    const nomes = [];
+    const valores = [];
+    const coresFaixas = [corLaranja, corAmarelo, corAzulEscuro, corVerdeAgua];
+    const cores = [];
+
+    faixas.forEach(function (faixa, i) {
+        const encontrado = dadosDoMes.find(function (linha) {
+            return linha.faixa === faixa;
+        });
+        if (encontrado) {
+            nomes.push(faixa);
+            valores.push(Number(encontrado.qtdFretes));
+            cores.push(coresFaixas[i]);
+        }
+    });
+
+    if (graficoFaixa) {
+        graficoFaixa.destroy();
     }
-);
+    graficoFaixa = criarRosca('faixaChart', 'legendaFaixa', nomes, valores, cores, function (valor) {
+        return valor + (valor === 1 ? ' frete' : ' fretes');
+    });
+}
+
+function plotarTopClientes(mes) {
+    const top5 = dadosClientes.filter(function (linha) {
+        return Number(linha.mes) === mes;
+    }).slice(0, 5);
+
+    const nomes = top5.map(function (linha) {
+        return linha.nome;
+    });
+    const valores = top5.map(function (linha) {
+        return Number(linha.receita);
+    });
+    const cores = [corLaranja, corAmarelo, corAzulEscuro, corVerdeAgua, corAzul].slice(0, nomes.length);
+
+    if (graficoCliente) {
+        graficoCliente.destroy();
+    }
+    graficoCliente = criarRosca('clienteChart', 'legendaCliente', nomes, valores, cores, formatarReais);
+}
+
+function filtrarMes() {
+    const mes = Number(document.getElementById('selectMes').value);
+
+    if (dadosFaixas) plotarFaixas(mes);
+    if (dadosClientes) plotarTopClientes(mes);
+}
+
+function carregarGraficosDoAno() {
+    buscarJson(`/financas/faixa-valor/${empresaId}?ano=${anoAtual}`)
+        .then(function (dados) {
+            dadosFaixas = dados;
+            plotarFaixas(Number(document.getElementById('selectMes').value));
+        })
+        .catch(function (erro) {
+            console.error(erro);
+            mostrarErro(document.getElementById('faixaChart'), erro.message);
+        });
+
+    buscarJson(`/financas/receita-clientes/${empresaId}?ano=${anoAtual}`)
+        .then(function (dados) {
+            dadosClientes = dados;
+            plotarTopClientes(Number(document.getElementById('selectMes').value));
+        })
+        .catch(function (erro) {
+            console.error(erro);
+            mostrarErro(document.getElementById('clienteChart'), erro.message);
+        });
+}
+
+function preencherSelect(idSelect, valores) {
+    const select = document.getElementById(idSelect);
+
+    valores.forEach(function (valor) {
+        const opcao = document.createElement('option');
+        opcao.value = valor;
+        opcao.textContent = valor;
+        select.appendChild(opcao);
+    });
+}
+
+function preencherFiltrosVeiculo() {
+    const marcas = [];
+    const modelos = [];
+
+    todosVeiculos.forEach(function (veiculo) {
+        if (veiculo.marca && !marcas.includes(veiculo.marca)) {
+            marcas.push(veiculo.marca);
+        }
+        if (veiculo.tipoVeiculo && !modelos.includes(veiculo.tipoVeiculo)) {
+            modelos.push(veiculo.tipoVeiculo);
+        }
+    });
+
+    preencherSelect('selectMarca', marcas.sort());
+    preencherSelect('selectModelo', modelos.sort());
+}
+
+function criarCardVeiculo(veiculo) {
+    const card = document.createElement('div');
+    card.className = 'veiculo card';
+
+    const nome = document.createElement('span');
+    nome.className = 'veiculo-nome';
+    nome.textContent = veiculo.marca + (veiculo.tipoVeiculo ? ' ' + veiculo.tipoVeiculo : '');
+
+    const placa = document.createElement('span');
+    placa.className = 'veiculo-placa';
+    placa.textContent = 'Placa: ' + veiculo.placa;
+
+    const gasto = document.createElement('span');
+    gasto.className = 'veiculo-gasto';
+    gasto.textContent = 'Gasto total ';
+    const valorGasto = document.createElement('span');
+    valorGasto.textContent = formatarReais(veiculo.gastoTotal);
+    gasto.appendChild(valorGasto);
+
+    const divImg = document.createElement('div');
+    divImg.className = 'veiculo-img';
+    const img = document.createElement('img');
+    img.src = 'assets/imgs/Truck.png';
+    img.alt = '';
+    divImg.appendChild(img);
+
+    card.appendChild(nome);
+    card.appendChild(placa);
+    card.appendChild(gasto);
+    card.appendChild(divImg);
+    return card;
+}
+
+function filtrarVeiculos() {
+    if (!todosVeiculos) return;
+
+    const marca = document.getElementById('selectMarca').value;
+    const modelo = document.getElementById('selectModelo').value;
+    const lista = document.getElementById('listaVeiculos');
+
+    const filtrados = todosVeiculos.filter(function (veiculo) {
+        return (!marca || veiculo.marca === marca) && (!modelo || veiculo.tipoVeiculo === modelo);
+    });
+
+    lista.innerHTML = '';
+
+    if (filtrados.length === 0) {
+        const vazio = document.createElement('p');
+        vazio.textContent = 'Nenhum veículo encontrado.';
+        lista.appendChild(vazio);
+        return;
+    }
+
+    filtrados.forEach(function (veiculo) {
+        lista.appendChild(criarCardVeiculo(veiculo));
+    });
+}
+
+function carregarVeiculos() {
+    buscarJson(`/financas/gasto-veiculos/${empresaId}`)
+        .then(function (veiculos) {
+            todosVeiculos = veiculos;
+            preencherFiltrosVeiculo();
+            filtrarVeiculos();
+        })
+        .catch(function (erro) {
+            console.error(erro);
+            const lista = document.getElementById('listaVeiculos');
+            lista.innerHTML = '';
+            const aviso = document.createElement('p');
+            aviso.className = 'mensagem-erro';
+            aviso.textContent = erro.message;
+            lista.appendChild(aviso);
+        });
+}
+
+function limparFiltrosVeiculo(evento) {
+    evento.preventDefault();
+    document.getElementById('selectStatus').selectedIndex = 0;
+    document.getElementById('selectMarca').value = '';
+    document.getElementById('selectModelo').value = '';
+    filtrarVeiculos();
+}
+
+if (empresaId) {
+    document.getElementById('selectMes').value = new Date().getMonth() + 1;
+
+    document.getElementById('btnFiltrarMes').addEventListener('click', filtrarMes);
+    document.getElementById('btnFiltrarVeiculos').addEventListener('click', filtrarVeiculos);
+    document.getElementById('limparFiltros').addEventListener('click', limparFiltrosVeiculo);
+
+    carregarKpis();
+    carregarFaturamentoMensal();
+    carregarGraficosDoAno();
+    carregarVeiculos();
+} else {
+    console.error('EMPRESA_ID não encontrado na sessão. Faça login novamente.');
+}

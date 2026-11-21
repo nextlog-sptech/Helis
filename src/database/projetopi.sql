@@ -3,22 +3,22 @@ use helis;
 
 create table endereco(
     idEndereco int primary key auto_increment,
-    cep char(8),
-    numero varchar(5),
-    logradouro varchar(45),
-    complemento varchar(45),
-    bairro varchar(45),
-    cidade varchar(45)
+    cep char(8) NOT NULL,
+    numero varchar(5) NOT NULL,
+    logradouro varchar(45) NOT NULL,
+    complemento varchar(45) ,
+    bairro varchar(45) NOT NULL,
+    cidade varchar(45 ) NOT NULL
 );
 
 create table empresa(
     idEmpresa int primary key auto_increment,
-    razao varchar(45),
-    cnpj char(14),
-    nomeFant varchar(45),
-    email varchar(60),
-    telefone char(11),
-    enderecoId int,
+    razao varchar(45) NOT NULL,
+    cnpj char(14) UNIQUE NOT NULL,
+    nomeFant varchar(45) NOT NULL,
+    email varchar(60) NOT NULL UNIQUE ,
+    telefone char(11) NOT NULL UNIQUE,
+    enderecoId int NOT NULL,
     constraint fkEnderecoEmpresa
         foreign key(enderecoId)
             references endereco(idEndereco)
@@ -26,28 +26,25 @@ create table empresa(
 
 create table usuario(
     idUsuario int primary key auto_increment,
-    cpf char(11),
-    nome varchar(45),
-    email varchar(60),
-    telefone char(11),
-    cargo varchar(30),
-    senha varchar(255),
-    empresaId int,
-    isAdmin boolean default false,
+    cpf char(11) NOT NULL UNIQUE,
+    nome varchar(45) NOT NULL,
+    email varchar(60) NOT NULL UNIQUE,
+    telefone char(11) NOT NULL UNIQUE ,
+    adm boolean NOT NULL,
+    senha varchar(255) NOT NULL,
+    empresaId int NOT NULL,
     constraint fkUsuarioEmpresa
         foreign key(empresaId)
             references empresa(idEmpresa)
 );
 
 create table veiculo(
-    idVeiculo int primary key auto_increment,
-    placa varchar(15),
-    marca varchar(45),
+    idVeiculo int primary key auto_increment ,
+    placa varchar(15) NOT NULL UNIQUE,
+    marca varchar(45) NOT NULL,
     tipoVeiculo varchar(45),
     bau varchar(30),
-    cor varchar(20),
-    estado varchar(20),
-    empresaId int,
+    empresaId int NOT NULL,
     constraint fkVeiculoEmpresa
         foreign key(empresaId)
             references empresa(idEmpresa)
@@ -55,102 +52,56 @@ create table veiculo(
 
 create table destinatario(
     idDestinatario int primary key auto_increment,
-    cpf char(11),
-    nome varchar(45),
-    email varchar(60),
-    telefone varchar(11),
-    cidade varchar(45),
-    uf char(2)
+    cpf char(11) NOT NULL UNIQUE,
+    nome varchar(45) NOT NULL,
+    email varchar(60) NOT NULL,
+    telefone varchar(11) NOT NULL,
+    cidade varchar(45) NOT NULL,
+    uf char(2) NOT NULL
 );
 
 create table frete(
     idFrete int primary key auto_increment,
-    veiculoId int,
-    usuarioId int,
-    docFiscal char(6),
-    valorFrete decimal(10,2),
+    idEmpresa int NOT NULL,
+    veiculoId int NOT NULL,
+    docFiscal char(6) NOT NULL UNIQUE,
+    dataFrete date NOT NULL,
+    valorFrete decimal(10,2) ,
     peso decimal(6,2),
     valorMercadoria decimal(10,2),
-    status varchar(30),
-    dataCadastro datetime,
-    dataSaida datetime,
-    dataEntregaPrevista datetime,
-    dataEntregaReal datetime,
-    destinatarioId int,
-    enderecoEntradaId int,
-    enderecoSaidaId int,
-
+    destinatarioId int NOT NULL,
+	constraint fkFreteEmpresa
+		foreign key(idEmpresa)
+            references empresa(idEmpresa),
     constraint fkFreteVeiculo
         foreign key(veiculoId)
             references veiculo(idVeiculo),
-
-    constraint fkFreteUsuario
-        foreign key(usuarioId)
-            references usuario(idUsuario),
-
     constraint fkFreteDestinatario
         foreign key(destinatarioId)
-            references destinatario(idDestinatario),
+            references destinatario(idDestinatario)
 
-    constraint fkEnderecoEntrada
-        foreign key(enderecoEntradaId)
-            references endereco(idEndereco),
-
-    constraint fkEnderecoSaida
-        foreign key(enderecoSaidaId)
-            references endereco(idEndereco)
 );
 
 create table kmrodado(
-    freteId int primary key,
-    kmPercorrido int,
-    gastoCombustivel decimal(8,2),
-    manutencao int,
-    custos int,
+    idkmRodado int primary key auto_increment,
+    idVeiculo int NOT NULL,
+    kmPercorrido int NOT NULL,
+    gastoCombustivel decimal(8,2) NOT NULL,
+    manutencao int NOT NULL,
+    custos int NOT NULL,
 
-    constraint fkKmRodadoFrete
-        foreign key(freteId)
-            references frete(idFrete)
+    constraint fkKmRodadoVeiculo
+        foreign key(idVeiculo)
+            references veiculo(idVeiculo)
 );
 
-
-create table configuracoes(
-enderecoEnvio varchar(100),
-ativado boolean default false,
-iniciarLeitura boolean default false,
-finalizarLeitura boolean default false,
-falha boolean default false
+create table log(
+    idLog int primary key auto_increment,
+    tipo varchar(45) NOT NULL,
+    horario datetime NOT NULL,
+    mensagem varchar(300 ) NOT NULL,
+    servico varchar(45) NOT NULL,
+    qtdRegistrosLidos INT NOT NULL,
+    tempoLeituraMs BIGINT
 );
-
-
-INSERT INTO endereco (cep, numero, logradouro, complemento, bairro, cidade)
-VALUES
-('01310100', '100', 'Avenida Paulista', 'Sala 12', 'Bela Vista', 'São Paulo'),
-('04538133', '250', 'Avenida Brigadeiro Faria Lima', 'Conjunto 21', 'Itaim Bibi', 'São Paulo'),
-('30130110', '500', 'Avenida Afonso Pena', 'Sala 5', 'Centro', 'Belo Horizonte'),
-('20040002', '75', 'Rua da Assembleia', 'Andar 3', 'Centro', 'Rio de Janeiro'),
-('80010000', '320', 'Rua XV de Novembro', 'Sala 8', 'Centro', 'Curitiba'),
-('40020110', '180', 'Avenida Sete de Setembro', 'Sala 10', 'Comércio', 'Salvador');
-
-INSERT INTO empresa (razao, cnpj, nomeFant, email, telefone, enderecoId)
-VALUES
-('Transportes Paulista LTDA', '12345678000190', 'Paulista Transportes', 'contato@paulistatransportes.com.br', '11987654321', 1),
-('Logistica Faria Lima LTDA', '23456789000101', 'Faria Lima Log', 'contato@farimalog.com.br', '11976543210', 2),
-('Minas Cargas LTDA', '34567890000112', 'Minas Cargas', 'contato@minascargas.com.br', '31987654321', 3),
-('Rio Express Transportes LTDA', '45678901000123', 'Rio Express', 'contato@rioexpress.com.br', '21987654321', 4),
-('Parana Logistica LTDA', '56789012000134', 'Parana Log', 'contato@paranalog.com.br', '41987654321', 5),
-('Bahia Transportes LTDA', '67890123000145', 'Bahia Transportes', 'contato@bahiatransportes.com.br', '71987654321', 6);
-
-INSERT INTO usuario (cpf, nome, email, telefone, cargo, senha, empresaId, isAdmin)
-VALUES
-('12345678901', 'Carlos Almeida', 'carlos@email.com.br', '11912345678', 'Analista Financeiro', 'senha123', 1,1),
-('23456789012', 'Mariana Costa', 'mariana@email.com.br', '11923456789', 'Analista de Logistica', 'senha456', 1,0),
-('34567890123', 'Rafael Santos', 'rafael@email.com.br', '31934567890', 'Analista de Logistica', 'senha789', 1,0),
-('45678901234', 'Juliana Oliveira', 'juliana@email.com.br', '21945678901', 'Analista Financeiro', 'senha101', 1, 1),
-('56789012345', 'Fernando Lima', 'fernando@email.com.br', '41956789012', 'Analista Financeiro', 'senha202', 1,0),
-('67890123456', 'Isabela Souza', 'isabela@email.com.br', '71967890123', 'Analista de Logistica', 'senha303', 1,0);
-
-
-
-
 

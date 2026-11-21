@@ -31,7 +31,7 @@
                         </div>
                         <div class="kpi-texto">
                             <span class="kpi-label">Receita Bruta</span>
-                            <span class="kpi-valor">R$99.000,00</span>
+                            <span class="kpi-valor" id="kpiReceita">R$0,00</span>
                         </div>
                     </div>
                     <div class="kpi-card card">
@@ -40,7 +40,7 @@
                         </div>
                         <div class="kpi-texto">
                             <span class="kpi-label">Rentabilidade</span>
-                            <span class="kpi-valor">R$8.000,00</span>
+                            <span class="kpi-valor" id="kpiRentabilidade">R$0,00</span>
                         </div>
                     </div>
                     <div class="kpi-card card">
@@ -49,7 +49,7 @@
                         </div>
                         <div class="kpi-texto">
                             <span class="kpi-label">Despesas</span>
-                            <span class="kpi-valor laranja">R$10.000,00</span>
+                            <span class="kpi-valor laranja" id="kpiDespesas">R$0,00</span>
                         </div>
                     </div>
                     <div class="kpi-card card">
@@ -58,7 +58,7 @@
                         </div>
                         <div class="kpi-texto">
                             <span class="kpi-label">Fretes</span>
-                            <span class="kpi-valor">R$50.000,00</span>
+                            <span class="kpi-valor" id="kpiFretes">0</span>
                         </div>
                     </div>
                 </div>
@@ -77,20 +77,20 @@
                     <label for="selectMes">Mês</label>
                     <div class="filtro-linha">
                         <select id="selectMes">
-                            <option>Janeiro</option>
-                            <option>Fevereiro</option>
-                            <option>Março</option>
-                            <option>Abril</option>
-                            <option>Maio</option>
-                            <option>Junho</option>
-                            <option>Julho</option>
-                            <option>Agosto</option>
-                            <option selected>Setembro</option>
-                            <option>Outubro</option>
-                            <option>Novembro</option>
-                            <option>Dezembro</option>
+                            <option value="1">Janeiro</option>
+                            <option value="2">Fevereiro</option>
+                            <option value="3">Março</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Maio</option>
+                            <option value="6">Junho</option>
+                            <option value="7">Julho</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
                         </select>
-                        <button type="button" class="botao-filtrar">Filtrar</button>
+                        <button type="button" class="botao-filtrar" id="btnFiltrarMes">Filtrar</button>
                     </div>
                 </div>
 
@@ -138,55 +138,23 @@
                     <div class="filtro">
                         <label for="selectMarca">Marca</label>
                         <select id="selectMarca">
-                            <option>Qualquer</option>
-                            <option>Volvo</option>
-                            <option>Scania</option>
-                            <option>Mercedes-Benz</option>
-                            <option>VW</option>
+                            <option value="">Qualquer</option>
                         </select>
                     </div>
                     <div class="filtro">
                         <label for="selectModelo">Modelo</label>
                         <select id="selectModelo">
-                            <option>Qualquer</option>
-                            <option>Vax1</option>
-                            <option>Vax2</option>
-                            <option>Vex5</option>
+                            <option value="">Qualquer</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="filtro-botoes">
-                    <button type="button" class="botao-filtrar">Filtrar</button>
-                    <a href="#" class="limpar-filtros">Limpar filtros</a>
+                    <button type="button" class="botao-filtrar" id="btnFiltrarVeiculos">Filtrar</button>
+                    <a href="#" class="limpar-filtros" id="limparFiltros">Limpar filtros</a>
                 </div>
 
-                <div class="lista-veiculos">
-                    <div class="veiculo card">
-                        <span class="veiculo-nome">Volvo Vax2</span>
-                        <span class="veiculo-placa">Placa: VTA2R41</span>
-                        <span class="veiculo-gasto">Gasto total <span>R$5.000,00</span></span>
-                         <div class="veiculo-img">
-                            <img src="assets/imgs/Truck.png" alt="">
-                        </div>
-                    </div>
-                    <div class="veiculo card">
-                        <span class="veiculo-nome">Volvo Vex5</span>
-                        <span class="veiculo-placa">Placa: VTA2444</span>
-                        <span class="veiculo-gasto">Gasto total  <span>R$1.800,00</span></span>
-                         <div class="veiculo-img">
-                            <img src="assets/imgs/Truck.png" alt="">
-                        </div>
-                    </div>
-                    <div class="veiculo card">
-                        <span class="veiculo-nome">Marca Vax1</span>
-                        <span class="veiculo-placa">Placa: 420HR41</span>
-                        <span class="veiculo-gasto">Gasto total  <span>R$2.422,00</span></span>
-                        <div class="veiculo-img">
-                            <img src="assets/imgs/Truck.png" alt="">
-                        </div>
-                    </div>
-                </div>
+                <div class="lista-veiculos" id="listaVeiculos"></div>
 
             </div>
         </div>
