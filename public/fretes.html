@@ -3,7 +3,7 @@
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NextLog | Fretes</title><link rel="shortcut icon" href="assets/icon/icon.png"><link rel="stylesheet" href="css/global.css"><link rel="stylesheet" href="css/frete.css"></head>
 <body><main><div class="sidebar" id="sidebar"></div><div class="main-posLogin"><div class="topo"><h1 class="titulo">Fretes</h1><div class="user" id="userNav"></div></div><div class="conteudo">
-<p>Visualização com dados de exemplo. As alterações desta tela não são gravadas no banco.</p>
+
 <form class="filtros" id="form-filtros">
 <div class="busca"><label class="campo">Buscar frete<input id="busca" placeholder="Código, documento fiscal, origem ou destino"></label></div>
 <div class="filtros-corpo"><div class="selects"><label class="campo">Status<select id="status"><option value="">Todos</option><option>Aguardando</option><option>Em transporte</option><option>Entregue</option><option>Cancelado</option></select></label><label class="campo">Saída a partir de<input type="date" id="inicio"></label><label class="campo">Saída até<input type="date" id="fim"></label></div><div class="acoes"><button class="btn-filtrar">Filtrar</button><button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar filtros</button></div></div><p id="erro" role="alert"></p></form>

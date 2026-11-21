@@ -49,7 +49,8 @@ async function login(req, res) {
         id: usuario.id,
         nome: usuario.nome,
         email: usuario.email,
-        empresaId: usuario.empresaId
+        empresaId: usuario.empresaId,
+        cargo: usuario.cargo
       }
     });
   } catch (erro) {
