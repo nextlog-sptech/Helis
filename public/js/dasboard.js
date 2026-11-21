@@ -282,10 +282,16 @@ function buscarFretesPorPeriodo() {
             mostrarErro('periodoChart', erro.message);
         });
 }
+async function buscarKpis() {
+    const kpis = await buscarJson(`/dashboard/kpis/${empresaId}`);
+    kpi1.innerHTML =kpis.tMedio
+    kpi2.innerHTML =kpis.custoManun
+}
 
 if (empresaId) {
     buscarFretesPorEstado();
     buscarFretesPorPeriodo();
+    buscarKpis();
 } else {
     console.error('EMPRESA_ID não encontrado na sessão. Faça login novamente.');
 }
