@@ -113,19 +113,6 @@ create table kmrodado(
             references frete(idFrete)
 );
 
-create table notificacao(
-    idNotificacao int primary key auto_increment,
-    tipo varchar(30),
-    titulo varchar(60),
-    mensagem varchar(255),
-    dataHora datetime,
-    lida tinyint,
-    idUsuario int,
-
-    constraint fkNotificacaoUsuario
-        foreign key(idUsuario)
-            references usuario(idUsuario)
-);
 
 create table configuracoes(
 enderecoEnvio varchar(100),
@@ -154,13 +141,16 @@ VALUES
 ('Parana Logistica LTDA', '56789012000134', 'Parana Log', 'contato@paranalog.com.br', '41987654321', 5),
 ('Bahia Transportes LTDA', '67890123000145', 'Bahia Transportes', 'contato@bahiatransportes.com.br', '71987654321', 6);
 
-INSERT INTO usuario (cpf, nome, email, telefone, cargo, senha, empresaId)
+INSERT INTO usuario (cpf, nome, email, telefone, cargo, senha, empresaId, isAdmin)
 VALUES
-('12345678901', 'Carlos Almeida', 'carlos@paulistatransportes.com.br', '11912345678', 'Administrador', 'senha123', 1),
-('23456789012', 'Mariana Costa', 'mariana@farimalog.com.br', '11923456789', 'Gestor de Logistica', 'senha456', 2),
-('34567890123', 'Rafael Santos', 'rafael@minascargas.com.br', '31934567890', 'Analista de Logistica', 'senha789', 3),
-('45678901234', 'Juliana Oliveira', 'juliana@rioexpress.com.br', '21945678901', 'Administrador', 'senha101', 4),
-('56789012345', 'Fernando Lima', 'fernando@paranalog.com.br', '41956789012', 'Motorista', 'senha202', 5),
-('67890123456', 'Isabela Souza', 'isabela@bahiatransportes.com.br', '71967890123', 'Gestor de Logistica', 'senha303', 6);
+('12345678901', 'Carlos Almeida', 'carlos@email.com.br', '11912345678', 'Analista Financeiro', 'senha123', 1,1),
+('23456789012', 'Mariana Costa', 'mariana@email.com.br', '11923456789', 'Analista de Logistica', 'senha456', 1,0),
+('34567890123', 'Rafael Santos', 'rafael@email.com.br', '31934567890', 'Analista de Logistica', 'senha789', 1,0),
+('45678901234', 'Juliana Oliveira', 'juliana@email.com.br', '21945678901', 'Analista Financeiro', 'senha101', 1, 1),
+('56789012345', 'Fernando Lima', 'fernando@email.com.br', '41956789012', 'Analista Financeiro', 'senha202', 1,0),
+('67890123456', 'Isabela Souza', 'isabela@email.com.br', '71967890123', 'Analista de Logistica', 'senha303', 1,0);
+
+
+
 
 
