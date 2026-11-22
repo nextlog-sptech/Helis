@@ -3,6 +3,7 @@ function salvarSessao(usuario) {
     sessionStorage.NOME_USUARIO = usuario.nome;
     sessionStorage.EMAIL_USUARIO = usuario.email;
     sessionStorage.EMPRESA_ID = usuario.empresaId;
+    sessionStorage.CARGO_USUARIO = usuario.cargo;
 }
 
 function validarSessao() {
@@ -26,6 +27,7 @@ function limparSessao() {
     sessionStorage.removeItem('NOME_USUARIO');
     sessionStorage.removeItem('EMAIL_USUARIO');
     sessionStorage.removeItem('EMPRESA_ID');
+    sessionStorage.removeItem('CARGO_USUARIO');
     window.location.replace('login.html');
 }
 
