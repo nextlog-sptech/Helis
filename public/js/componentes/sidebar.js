@@ -97,7 +97,7 @@ sidebar.innerHTML = `
 `;
 
 userNav.innerHTML = `
- <button onclick="abrirModalConfig()" href="" class="userButton temaButton"> <i class="fa-regular   fa-sun"></i></button>
+ <button onclick="abrirModalConfig()" href="" class="userButton temaButton"> <i class="fa-solid   fa-gear"></i></button>
 
                     <a href="" class="buttonSair" onclick="sessionStorage.clear()">Sair</a>`;
 

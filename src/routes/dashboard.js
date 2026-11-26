@@ -10,5 +10,9 @@ router.get("/fretes-estado/:empresaId", function (req, res) {
 router.get("/fretes-periodo/:empresaId", function (req, res) {
     dashboardController.buscarFretesPorPeriodo(req, res);
 });
+router.get("/kpis/:empresaId", function (req, res) {
+    console.log("a")
+    dashboardController.buscarKpis(req, res);
+});
 
 module.exports = router;
