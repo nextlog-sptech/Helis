@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env.dev
+*.md
+DOCUMENTOS_DE_APOIO
