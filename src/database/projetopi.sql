@@ -1,4 +1,4 @@
-create database helis;
+create database if not exists helis;
 use helis;
 
 create table endereco(

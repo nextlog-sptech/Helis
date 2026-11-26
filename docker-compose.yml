@@ -1,0 +1,60 @@
+services:
+  # Serviço do Banco de Dados MySQL
+  banco:
+    container_name: helis-banco
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Variavel DB_ROOT_PASSWORD obrigatoria no .env}
+      MYSQL_DATABASE: ${DB_DATABASE:-helis}
+      MYSQL_USER: ${DB_USER:-helis_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Variavel DB_PASSWORD obrigatoria no .env}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - dados_mysql:/var/lib/mysql
+      - ./src/database/projetopi.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./src/database/dados-teste.sql:/docker-entrypoint-initdb.d/02-dados-teste.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - rede-helis
+
+  # Serviço da Aplicação Node.js
+  aplicacao:
+    container_name: helis-app
+    image: helis-app:latest
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      AMBIENTE_PROCESSO: producao
+      APP_PORT: ${APP_PORT:-3333}
+      APP_HOST: 0.0.0.0
+      DB_HOST: banco
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-helis}
+      DB_USER: ${DB_USER:-helis_user}
+      DB_PASSWORD: ${DB_PASSWORD:?Variavel DB_PASSWORD obrigatoria no .env}
+    ports:
+      - "${APP_PORT:-3333}:${APP_PORT:-3333}"
+    depends_on:
+      banco:
+        condition: service_healthy
+    networks:
+      - rede-helis
+
+# Rede personalizada para comunicação interna entre containers
+networks:
+  rede-helis:
+    driver: bridge
+
+# Volume persistente para os dados do MySQL
+volumes:
+  dados_mysql:
+    driver: local
