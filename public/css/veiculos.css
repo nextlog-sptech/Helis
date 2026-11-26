@@ -151,15 +151,15 @@
     gap: 28rem;
 
     .card-veiculo {
-      position: relative;
+      box-sizing: border-box;
       display: flex;
-      align-items: stretch;
-      justify-content: space-between;
-      height: 292rem;
+      flex-direction: column;
+      gap: 18rem;
+      padding: 24rem;
       background-color: var(--branco);
+      border: 1rem solid color-mix(in srgb, var(--azul) 8%, var(--branco));
       border-radius: 24rem;
       box-shadow: 0 2rem 10rem rgba(0, 30, 70, .06);
-      overflow: hidden;
       transition: 200ms;
 
       &:hover {
@@ -167,103 +167,144 @@
         box-shadow: 0 12rem 28rem rgba(0, 30, 70, .14);
       }
 
-      .nome {
-        position: absolute;
-        top: 20rem;
-        left: 20rem;
-        color: var(--azulEscuro);
-        font-size: 22rem;
-        font-weight: 700;
-      }
-
-      .placa {
-        position: absolute;
-        top: 16rem;
-        left: 250rem;
-        background-color: var(--azulEscuro);
-        color: var(--branco);
-        padding: 7rem 12rem;
-        border-radius: 5rem;
-        font-size: 12rem;
-        font-weight: 600;
-      }
-
-      .info {
-        box-sizing: border-box;
-        position: absolute;
-        left: 12rem;
-        top: 54rem;
-        bottom: 12rem;
-        width: 228rem;
-        padding: 12rem 14rem;
-        background-color: color-mix(in srgb, var(--azul) 10%, var(--branco));
-        border-radius: 10rem;
+      /* ---------- topo: ícone + nome + placa ---------- */
+      .card-topo {
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        align-items: center;
+        gap: 14rem;
 
-        .item {
+        .icone {
+          flex: 0 0 auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 52rem;
+          height: 52rem;
+          border-radius: 14rem;
+          background-color: color-mix(in srgb, var(--azul) 12%, var(--branco));
+          color: var(--azul);
+
+          svg {
+            width: 28rem;
+            height: 28rem;
+          }
+        }
+
+        .identificacao {
+          flex: 1;
+          min-width: 0;
           display: flex;
           flex-direction: column;
+          gap: 2rem;
+
+          .nome {
+            color: var(--azulEscuro);
+            font-size: 21rem;
+            font-weight: 700;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          .marca {
+            color: var(--cinza);
+            font-size: 13rem;
+            font-weight: 400;
+          }
+        }
+
+        .placa {
+          flex: 0 0 auto;
+          padding: 7rem 12rem;
+          border-radius: 6rem;
+          background-color: var(--azulEscuro);
+          color: var(--branco);
+          font-size: 13rem;
+          font-weight: 600;
+          letter-spacing: 1rem;
+        }
+      }
+
+      /* ---------- frete (destaque) ---------- */
+      .frete {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12rem;
+        padding: 16rem 18rem;
+        border-radius: 14rem;
+        background-color: color-mix(in srgb, var(--laranja) 12%, var(--branco));
+
+        small {
+          color: var(--azulEscuro);
+          font-size: 14rem;
+          font-weight: 500;
+        }
+
+        strong {
+          color: var(--laranja);
+          font-size: 24rem;
+          font-weight: 700;
+          white-space: nowrap;
+        }
+      }
+
+      /* ---------- métricas: viagens e km ---------- */
+      .metricas {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-radius: 14rem;
+        background-color: color-mix(in srgb, var(--azul) 8%, var(--branco));
+
+        .metrica {
+          display: flex;
+          flex-direction: column;
+          gap: 4rem;
+          padding: 14rem 18rem;
 
           small {
             color: var(--cinza);
-            font-size: 12rem;
+            font-size: 13rem;
             font-weight: 400;
           }
 
           strong {
             color: var(--azul);
-            font-size: 14rem;
+            font-size: 20rem;
             font-weight: 700;
           }
-        }
 
-        .item.frete {
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: flex-start;
+          & + .metrica {
+            border-left: 1rem solid color-mix(in srgb, var(--azul) 20%, transparent);
+          }
+        }
+      }
+
+      /* ---------- tags: tipo de veículo e baú ---------- */
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10rem;
+
+        .tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 6rem;
+          padding: 8rem 14rem;
+          border-radius: 20rem;
+          border: 1rem solid color-mix(in srgb, var(--azul) 25%, var(--branco));
+          color: var(--azulEscuro);
+          font-size: 13rem;
+          font-weight: 500;
 
           small {
-            color: var(--azul);
-            font-weight: 600;
-          }
-
-          strong {
-            color: var(--laranja);
+            color: var(--cinza);
+            font-size: 13rem;
+            font-weight: 400;
           }
         }
-
-        .divisor {
-          height: 1rem;
-          background-color: color-mix(in srgb, var(--azul) 25%, transparent);
-        }
       }
-
-      .img-veiculo {
-        position: absolute;
-        right: -50rem;
-        bottom: 0;
-        width: 62%;
-        height: 100%;
-        object-fit: contain;
-        object-position: center bottom;
-        pointer-events: none;
-        
-        img {
-          width: auto;
-          height: 700px;
-          object-fit: cover;
-          object-position: left;
-          position: absolute;
-          left: 0%;
-          top: -160px;
-      
-         
-        }
-      }
-
-
     }
   }
 
@@ -495,34 +536,38 @@ main .main-posLogin .topo {
       gap: 18rem;
 
       .card-veiculo {
-        height: auto;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 12rem;
-        padding: 16rem;
+        padding: 18rem;
+        gap: 14rem;
 
-        .nome,
-        .placa,
-        .info,
-        .imagem {
-          position: static;
+        .card-topo {
+          flex-wrap: wrap;
+
+          .icone {
+            width: 44rem;
+            height: 44rem;
+
+            svg {
+              width: 24rem;
+              height: 24rem;
+            }
+          }
+
+          .identificacao .nome {
+            font-size: 19rem;
+            white-space: normal;
+          }
         }
 
-        .nome {
-          font-size: 19rem;
+        .frete strong {
+          font-size: 21rem;
         }
 
-        .info {
-          width: 100%;
-          gap: 10rem;
-        }
+        .metricas .metrica {
+          padding: 12rem 14rem;
 
-        .imagem {
-          width: 100%;
-          height: 170rem;
-          object-fit: contain;
-          object-position: center;
+          strong {
+            font-size: 18rem;
+          }
         }
       }
     }
