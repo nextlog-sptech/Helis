@@ -48,12 +48,40 @@ function buscarFretesPorPeriodo(req, res) {
   dashboardModel
     .buscarFretesPorPeriodo(empresaId, qtdMeses)
     .then(function (resultado) {
-      res.status(200).json('resultado');
+      res.status(200).json(resultado);
     })
     .catch(function (erro) {
       tratarErro(res, erro);
     });
 }
+function buscarTiposBau(req, res) {
+  var empresaId = validarEmpresa(req, res);
+  if (empresaId == null) return;
+
+  dashboardModel
+    .buscarTiposBau(empresaId)
+    .then(function (resultado) {
+      res.status(200).json(resultado);
+    })
+    .catch(function (erro) {
+      tratarErro(res, erro);
+    });
+}
+
+function buscarFretesPorRegiao(req, res) {
+  var empresaId = validarEmpresa(req, res);
+  if (empresaId == null) return;
+
+  dashboardModel
+    .buscarFretesPorRegiao(empresaId)
+    .then(function (resultado) {
+      res.status(200).json(resultado);
+    })
+    .catch(function (erro) {
+      tratarErro(res, erro);
+    });
+}
+
 async function buscarKpis(req, res) {
   var empresaId = validarEmpresa(req, res);
 
@@ -61,7 +89,7 @@ async function buscarKpis(req, res) {
   try {
     const kpis = await dashboardModel.kpis(empresaId);
     console.log(kpis);
-    res.status(200).json({tMedio:kpis[0],custoManun:kpis[1],teste:kpis[2]});
+    res.status(200).json({tMedio:kpis[0],custoManun:kpis[1]});
   } catch (e) {
     tratarErro(res, e);
   }
@@ -69,5 +97,7 @@ async function buscarKpis(req, res) {
 module.exports = {
   buscarFretesPorEstado,
   buscarFretesPorPeriodo,
+  buscarTiposBau,
+  buscarFretesPorRegiao,
   buscarKpis,
 };

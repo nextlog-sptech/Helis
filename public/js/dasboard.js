@@ -131,89 +131,188 @@ function buscarFretesPorEstado() {
         });
 }
 
-// ===== Gráfico de rosca: Tipos de Baú =====
-new Chart(document.getElementById('graficoRosca'), {
-    type: 'doughnut',
-    data: {
-        labels: ['Alumínio', 'Sider'],
-        datasets: [{
-            data: [40, 60],
-            backgroundColor: [corLaranja, corAzul],
-            borderWidth: 0
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '50%',
-        plugins: {
-            legend: {
-                display: false // a legenda é a do HTML, igual ao Figma
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (item) {
-                        return item.label + ': ' + item.raw + '%';
+const coresRosca = [corAzul, corLaranja, corAzulEscuro, '#66A9E0', '#2A8A94'];
+const corOutros = corCinza;
+const corNaoInformado = '#C9CDD6';
+const NAO_INFORMADO = 'Não informado';
+
+function montarFatias(dados, campoNome, campoValor) {
+    const fatias = [];
+    const nomeados = [];
+    let naoInformado = 0;
+
+    dados.forEach(function (linha) {
+        const valor = Number(linha[campoValor]) || 0;
+        if (valor <= 0) return;
+        if (linha[campoNome] === NAO_INFORMADO) {
+            naoInformado += valor;
+        } else {
+            nomeados.push({ nome: linha[campoNome], valor: valor });
+        }
+    });
+
+    nomeados.sort(function (a, b) {
+        return b.valor - a.valor;
+    });
+
+    const visiveis = nomeados.length > coresRosca.length ? nomeados.slice(0, coresRosca.length - 1) : nomeados;
+    visiveis.forEach(function (item, i) {
+        fatias.push({ nome: item.nome, valor: item.valor, cor: coresRosca[i] });
+    });
+
+    if (visiveis.length < nomeados.length) {
+        const outros = nomeados.slice(visiveis.length).reduce(function (soma, item) {
+            return soma + item.valor;
+        }, 0);
+        fatias.push({ nome: 'Outros', valor: outros, cor: corOutros });
+    }
+
+    if (naoInformado > 0) {
+        fatias.push({ nome: NAO_INFORMADO, valor: naoInformado, cor: corNaoInformado });
+    }
+
+    return fatias;
+}
+
+function calcularPercentuais(valores) {
+    const total = valores.reduce(function (soma, valor) {
+        return soma + valor;
+    }, 0);
+    if (total === 0) {
+        return valores.map(function () {
+            return 0;
+        });
+    }
+
+    const exatos = valores.map(function (valor) {
+        return (valor / total) * 100;
+    });
+    const percentuais = exatos.map(Math.floor);
+    let restante = 100 - percentuais.reduce(function (soma, valor) {
+        return soma + valor;
+    }, 0);
+
+    exatos
+        .map(function (valor, i) {
+            return { i: i, resto: valor - Math.floor(valor) };
+        })
+        .sort(function (a, b) {
+            return b.resto - a.resto;
+        })
+        .forEach(function (item) {
+            if (restante > 0) {
+                percentuais[item.i]++;
+                restante--;
+            }
+        });
+
+    return percentuais;
+}
+
+function mostrarAvisoRosca(idCanvas, idLegenda, mensagem, ehErro) {
+    const legenda = document.getElementById(idLegenda);
+    const canvas = document.getElementById(idCanvas);
+    legenda.innerHTML = '';
+
+    const aviso = document.createElement('p');
+    aviso.className = ehErro ? 'mensagem-erro' : 'mensagem-vazia';
+    aviso.textContent = mensagem;
+    legenda.appendChild(aviso);
+
+    canvas.parentElement.style.display = 'none';
+}
+
+function plotarRosca(idCanvas, idLegenda, fatias, descricaoUnidade) {
+    const legenda = document.getElementById(idLegenda);
+    const nomes = fatias.map(function (fatia) {
+        return fatia.nome;
+    });
+    const valores = fatias.map(function (fatia) {
+        return fatia.valor;
+    });
+    const cores = fatias.map(function (fatia) {
+        return fatia.cor;
+    });
+    const percentuais = calcularPercentuais(valores);
+
+    legenda.innerHTML = '';
+    legenda.classList.toggle('compacta', fatias.length > 3);
+    nomes.forEach(function (nome, i) {
+        const item = document.createElement('div');
+        item.className = 'legenda-item';
+
+        const bolinha = document.createElement('span');
+        bolinha.className = 'bolinha';
+        bolinha.style.backgroundColor = cores[i];
+
+        const texto = document.createElement('p');
+        texto.textContent = nome + ' (' + percentuais[i] + '%)';
+
+        item.appendChild(bolinha);
+        item.appendChild(texto);
+        legenda.appendChild(item);
+    });
+
+    new Chart(document.getElementById(idCanvas), {
+        type: 'doughnut',
+        data: {
+            labels: nomes,
+            datasets: [{
+                data: valores,
+                backgroundColor: cores,
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '50%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (item) {
+                            const unidade = item.raw === 1 ? descricaoUnidade[0] : descricaoUnidade[1];
+                            return item.label + ': ' + item.raw + ' ' + unidade + ' (' + percentuais[item.dataIndex] + '%)';
+                        }
                     }
                 }
             }
         }
-    }
-});
+    });
+}
 
-// ===== Gráfico de rosca: Fretes por Região =====
-const regioes = ['Sudeste', 'Nordeste', 'Sul', 'Centro-Oeste', 'Norte'];
-const fretesRegioes = [45, 22, 18, 10, 5];
-// a 5ª cor (azul claro) não existe no global.css, por isso está em hex
-const coresRegioes = [corAzul, corLaranja, corAzulEscuro, corCinza, '#66A9E0'];
-
-// monta a legenda no mesmo formato da legenda do HTML
-const legendaRegiao = document.getElementById('legendaRegiao');
-
-regioes.forEach(function (regiao, i) {
-    const item = document.createElement('div');
-    item.className = 'legenda-item';
-
-    const bolinha = document.createElement('span');
-    bolinha.className = 'bolinha';
-    bolinha.style.backgroundColor = coresRegioes[i];
-
-    const texto = document.createElement('p');
-    texto.textContent = regiao + ' (' + fretesRegioes[i] + '%)';
-
-    item.appendChild(bolinha);
-    item.appendChild(texto);
-    legendaRegiao.appendChild(item);
-});
-
-new Chart(document.getElementById('graficoRegiao'), {
-    type: 'doughnut',
-    data: {
-        labels: regioes,
-        datasets: [{
-            data: fretesRegioes,
-            backgroundColor: coresRegioes,
-            borderWidth: 0
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '50%',
-        plugins: {
-            legend: {
-                display: false
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (item) {
-                        return item.label + ': ' + item.raw + '%';
-                    }
-                }
+function buscarTiposBau() {
+    buscarJson(`/dashboard/tipos-bau/${empresaId}`)
+        .then(function (dados) {
+            const fatias = montarFatias(dados || [], 'bau', 'qtdVeiculos');
+            if (fatias.length === 0) {
+                mostrarAvisoRosca('graficoRosca', 'legendaBau', 'Nenhum veículo cadastrado.', false);
+                return;
             }
-        }
-    }
-});
+            plotarRosca('graficoRosca', 'legendaBau', fatias, ['veículo', 'veículos']);
+        })
+        .catch(function (erro) {
+            console.error(erro);
+            mostrarAvisoRosca('graficoRosca', 'legendaBau', erro.message, true);
+        });
+}
+
+function buscarFretesPorRegiao() {
+    buscarJson(`/dashboard/fretes-regiao/${empresaId}`)
+        .then(function (dados) {
+            const fatias = montarFatias(dados || [], 'regiao', 'qtdFretes');
+            if (fatias.length === 0) {
+                mostrarAvisoRosca('graficoRegiao', 'legendaRegiao', 'Nenhum frete encontrado.', false);
+                return;
+            }
+            plotarRosca('graficoRegiao', 'legendaRegiao', fatias, ['frete', 'fretes']);
+        })
+        .catch(function (erro) {
+            console.error(erro);
+            mostrarAvisoRosca('graficoRegiao', 'legendaRegiao', erro.message, true);
+        });
+}
 
 // ===== Gráfico de linha: Fretes por período =====
 const QTD_MESES_PERIODO = 7;
@@ -283,9 +382,19 @@ function buscarFretesPorPeriodo() {
         });
 }
 async function buscarKpis() {
-    const kpis = await buscarJson(`/dashboard/kpis/${empresaId}`);
-    kpi1.innerHTML =kpis.tMedio
-    kpi2.innerHTML =kpis.custoManun
+    const kpiTicket = document.getElementById('kpi1');
+    const kpiManutencao = document.getElementById('kpi2');
+    try {
+        const kpis = await buscarJson(`/dashboard/kpis/${empresaId}`);
+        kpiTicket.textContent = kpis.tMedio;
+        kpiManutencao.textContent = kpis.custoManun;
+    } catch (erro) {
+        console.error(erro);
+        kpiTicket.textContent = 'Indisponível';
+        kpiManutencao.textContent = 'Indisponível';
+        kpiTicket.title = erro.message;
+        kpiManutencao.title = erro.message;
+    }
 }
 
 function carregarFretesRecentes() {
@@ -325,6 +434,8 @@ function carregarFretesRecentes() {
 if (empresaId) {
     buscarFretesPorEstado();
     buscarFretesPorPeriodo();
+    buscarTiposBau();
+    buscarFretesPorRegiao();
     buscarKpis();
     carregarFretesRecentes();
 } else {

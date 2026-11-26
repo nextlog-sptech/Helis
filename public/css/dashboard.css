@@ -335,6 +335,21 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
     background-color: var(--azul);
 }
 
+.rosca-legenda.compacta {
+    gap: 12px;
+}
+
+.rosca-legenda .mensagem-erro,
+.rosca-legenda .mensagem-vazia {
+    font-size: 14rem;
+    text-align: left;
+    padding: 0;
+}
+
+.rosca-legenda .mensagem-vazia {
+    color: var(--cinza);
+}
+
 .rosca-grafico {
     position: relative;
     width: 140px;
@@ -478,7 +493,8 @@ Não é necessário copiar as variaveis aqui ,apenas use o var(--variavel);
         margin-top: 10px;
     }
 
-    .rosca-legenda {
+    .rosca-legenda,
+    .rosca-legenda.compacta {
         gap: 10px;
     }
 
