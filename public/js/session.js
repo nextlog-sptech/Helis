@@ -6,11 +6,11 @@ function salvarSessao(usuario) {
     sessionStorage.CARGO_USUARIO = usuario.cargo;
 }
 
-// function validarSessao() {
-//     if (!sessionStorage.ID_USUARIO) {
-//         window.location.replace('login.html');
-//         return;
-//     }
+ function validarSessao() {
+     if (!sessionStorage.ID_USUARIO) {
+         window.location.replace('login.html');
+         return;
+     }
 
     var nomeUsuario = document.getElementById('nome_usuario');
     var boasVindas = document.getElementById('boas_vindas');
