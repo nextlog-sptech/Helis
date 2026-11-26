@@ -22,6 +22,7 @@ var bobiaRouter = require("./src/routes/bobia");
 var funcionarioRouter = require("./src/routes/funcionario");
 var dashboardRouter = require("./src/routes/dashboard");
 var financasRouter = require("./src/routes/financas");
+var fretesRouter = require("./src/routes/fretes");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -35,6 +36,7 @@ app.use("/bobia", bobiaRouter);
 app.use("/funcionario", funcionarioRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/financas", financasRouter);
+app.use("/fretes", fretesRouter);
 app.listen(PORTA_APP, function () {
     console.log(`
     ##   ##  ######  ##   ##  ######  ##       ####    #### 

@@ -282,10 +282,51 @@ function buscarFretesPorPeriodo() {
             mostrarErro('periodoChart', erro.message);
         });
 }
+async function buscarKpis() {
+    const kpis = await buscarJson(`/dashboard/kpis/${empresaId}`);
+    kpi1.innerHTML =kpis.tMedio
+    kpi2.innerHTML =kpis.custoManun
+}
+
+function carregarFretesRecentes() {
+    var tabela = document.getElementById('tabelaFretesRecentes');
+    if (!tabela) return;
+
+    buscarJson(`/fretes/recentes/${empresaId}?limite=6`)
+        .then(function (dados) {
+            tabela.innerHTML = '';
+            if (!dados || dados.length === 0) {
+                tabela.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum frete recente encontrado.</td></tr>';
+                return;
+            }
+
+            dados.forEach(function (frete) {
+                var cidadeUf = frete.destinoCidade ? `${frete.destinoCidade} - ${frete.destinoUf || ''}` : (frete.destinatario || '-');
+                var veiculo = frete.veiculo || '-';
+                var bau = frete.bau || '-';
+                var data = frete.dataFormatada || '-';
+
+                var tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${cidadeUf}</td>
+                    <td>${veiculo}</td>
+                    <td>${bau}</td>
+                    <td>${data}</td>
+                `;
+                tabela.appendChild(tr);
+            });
+        })
+        .catch(function (erro) {
+            console.error('Erro ao carregar fretes recentes:', erro);
+            tabela.innerHTML = '<tr><td colspan="4" style="text-align:center;">Erro ao carregar dados.</td></tr>';
+        });
+}
 
 if (empresaId) {
     buscarFretesPorEstado();
     buscarFretesPorPeriodo();
+    buscarKpis();
+    carregarFretesRecentes();
 } else {
     console.error('EMPRESA_ID não encontrado na sessão. Faça login novamente.');
 }
