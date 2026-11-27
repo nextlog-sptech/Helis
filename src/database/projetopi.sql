@@ -26,13 +26,14 @@ create table empresa(
 
 create table usuario(
     idUsuario int primary key auto_increment,
-    cpf char(11) NOT NULL UNIQUE,
-    nome varchar(45) NOT NULL,
-    email varchar(60) NOT NULL UNIQUE,
-    telefone char(11) NOT NULL UNIQUE ,
-    adm boolean NOT NULL,
-    senha varchar(255) NOT NULL,
-    empresaId int NOT NULL,
+    cpf char(11),
+    nome varchar(45),
+    email varchar(60),
+    telefone char(11),
+    cargo varchar(30),
+    senha varchar(255),
+    empresaId int,
+    isAdmin boolean default false,
     constraint fkUsuarioEmpresa
         foreign key(empresaId)
             references empresa(idEmpresa)
@@ -49,13 +50,8 @@ create table veiculo(
         foreign key(empresaId)
             references empresa(idEmpresa)
 );
-
 create table destinatario(
     idDestinatario int primary key auto_increment,
-    cpf char(11) NOT NULL UNIQUE,
-    nome varchar(45) NOT NULL,
-    email varchar(60) NOT NULL,
-    telefone varchar(11) NOT NULL,
     cidade varchar(45) NOT NULL,
     uf char(2) NOT NULL
 );
@@ -105,3 +101,14 @@ create table log(
     tempoLeituraMs BIGINT
 );
 
+create table configSlack(
+enderecoEnvio varchar(100),
+ativado boolean default false,
+iniciarLeitura boolean default false,
+finalizarLeitura boolean default false,
+empresaId int,
+falha boolean default false,
+    constraint fkEmpresaConfig
+        foreign key(empresaId)
+            references empresa(idEmpresa)
+);
