@@ -12,9 +12,9 @@ public class Conexao {
 
         DriverManagerDataSource driver = new DriverManagerDataSource();
 
-        driver.setUsername("root");
-        driver.setPassword("Finsacademicos29@");
-        driver.setUrl("jdbc:mysql://localhost:3306/projetopi");
+        driver.setUsername("helis_user");
+        driver.setPassword("HelisDev#2026!Mysql");
+        driver.setUrl("jdbc:mysql://localhost:3306/helis");
         driver.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.conexao = driver;
     }

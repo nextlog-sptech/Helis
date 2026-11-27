@@ -7,7 +7,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 
-public class SlackNotificador {
+public class         SlackNotificador {
 
     private static final DateTimeFormatter FORMATO_HORARIO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
