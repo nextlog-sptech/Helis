@@ -158,9 +158,18 @@ function abrirFormulario(idUsuario) {
     document.getElementById('titulo-formulario').textContent =
         idUsuario === -1 ? 'Novo funcionário' : 'Editar funcionário';
 
-    campoSenha.required = idUsuario === -1;
-    campoSenha.value = '';
-    campoSenha.disabled = idUsuario !== -1;
+
+   var campoSenhaContainer = campoSenha.parentElement;
+
+   campoSenha.required = idUsuario === -1;
+   campoSenha.value = '';
+   campoSenha.disabled = idUsuario !== -1;
+
+   if (idUsuario === -1) {
+    campoSenhaContainer.style.display = '';
+   } else {
+    campoSenhaContainer.style.display = 'none';
+   }
 
     if (idUsuario !== -1) {
         var funcionario = funcionarios.find(function(item) {
